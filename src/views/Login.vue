@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { reactive, ref } from "vue";
 import { login } from "@/api/login";
-import { ElForm, ElMessage } from "element-plus";
-import { UserFilled, Lock } from '@element-plus/icons-vue'
+import { ElForm } from "element-plus";
+import { Lock, UserFilled } from '@element-plus/icons-vue'
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { SAVE_WEB_TITLE_SUFFIX } from "@/store/mutations-types";
-import { getSiteInfo, getWebTitleSuffix } from "@/api/siteSetting";
+import { getSiteInfo } from "@/api/siteSetting";
+import { msgSuccess } from "@/utils/message";
 
 const router = useRouter()
 const store = useStore()
@@ -36,14 +37,11 @@ const handleLogin = (formEl: FormInstance | undefined) => {
   formEl.validate((valid) => {
     if (valid) {
       const data = login(loginForm)
-      ElMessage({
-        message: '登陆成功',
-        type: 'success',
-      })
+      msgSuccess('登录成功')
       const siteInfo = getSiteInfo()
-      store.commit(SAVE_WEB_TITLE_SUFFIX, siteInfo.webTitleSuffix)
       window.localStorage.setItem('token', data.token)
       window.localStorage.setItem('user', JSON.stringify(data.user))
+      store.commit(SAVE_WEB_TITLE_SUFFIX, siteInfo.webTitleSuffix)
       router.push('/home')
     } else {
       return false
