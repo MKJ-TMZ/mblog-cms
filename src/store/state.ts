@@ -1,5 +1,6 @@
 const state = {
-  webTitleSuffix: ''
+  webTitleSuffix: '',
+  activePath: ''
 }
 
 export default state

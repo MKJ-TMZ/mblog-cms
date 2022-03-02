@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import store from "@/store";
+import { msgError } from "@/utils/message";
+import { SAVE_NAV_STATE } from "@/store/mutations-types";
 
 const routes: any[] = [
   {
@@ -13,6 +15,10 @@ const routes: any[] = [
       title: '后台管理登录'
     }
   },
+  {
+    path: '/home',
+    component: () => import('@/views/Home.vue'),
+  }
 ]
 
 
@@ -25,6 +31,11 @@ const router = createRouter({
 router.beforeEach((to: any, from: any, next: any) => {
   if (to.path !== '/login') {
     // token判断
+    const tokenStr = window.localStorage.getItem('token')
+    if (!tokenStr) {
+      next("/login")
+      msgError('登录超时')
+    }
   }
 
   if (to.meta.title) {
@@ -34,6 +45,9 @@ router.beforeEach((to: any, from: any, next: any) => {
       document.title = to.meta.title
     }
   }
+
+  // 储存当前菜单id
+  store.commit(SAVE_NAV_STATE, to.path)
 
   next()
 })
