@@ -44,6 +44,7 @@ const menuList = [
   },
   {
     title: '页面管理',
+    id: 2,
     path: '/pageManage',
     children: [
       {
@@ -67,14 +68,18 @@ const menuList = [
 
 // 菜单图标配置
 const menuIcons = {
-  '1': 'el-icon-menu',
-  '11': 'el-icon-edit',
-  '12': 'el-icon-edit',
-  '13': 'el-icon-s-order',
-  '14': 'el-icon-chat-dot-round',
-  '15': 'el-icon-s-opportunity',
-  '16': 'submenu ali-iconfont icon-biaoqian',
-  '17': 'el-icon-s-comment',
+  '1': 'iconfont icon-blog',
+  '2': 'iconfont icon-web',
+  '11': 'iconfont icon-edit-write',
+  '12': 'iconfont icon-edit-write',
+  '13': 'iconfont icon-svgwrite',
+  '14': 'iconfont icon-dynamic',
+  '15': 'iconfont icon-sort',
+  '16': 'iconfont icon-tags-fill',
+  '17': 'iconfont icon-comment_fill_light',
+  '21': 'iconfont icon-pages',
+  '22': 'iconfont icon-firends',
+  '23': 'iconfont icon-about',
 }
 
 // 默认打开的菜单

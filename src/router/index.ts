@@ -18,6 +18,16 @@ const routes: any[] = [
   {
     path: '/home',
     component: () => import('@/views/Home.vue'),
+    redirect: '/blogManage/writeBlog',
+    children: [
+      {
+        path: '/blogManage/writeBlog',
+        component: () => import('@/views/blogManage/WriteBlog.vue'),
+        meta: {
+          title: '写文章'
+        }
+      }
+    ]
   }
 ]
 

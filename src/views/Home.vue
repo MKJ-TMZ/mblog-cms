@@ -88,12 +88,12 @@ const logout = () => {
           <el-sub-menu :index="item.path" v-for="item in menuList" :key="item.id">
             <!-- 一级菜单的模板区域 -->
             <template #title>
-              <i class="iconfont" :class="menuIcons[item.id]"></i>
+              <i class="menu-icon" :class="menuIcons[item.id]"></i>
               <span>{{ item.title }}</span>
             </template>
             <!-- 二级菜单 -->
             <el-menu-item :index="subItem.path" v-for="subItem in item.children" :key="subItem.id">
-              <el-icon><i :class="menuIcons[subItem.id]"></i></el-icon>
+              <i class="menu-icon" :class="menuIcons[subItem.id]"/>
               <template #title>
                 <span>{{ subItem.title }}</span>
               </template>
@@ -102,7 +102,7 @@ const logout = () => {
         </el-menu>
       </el-aside>
       <!--右侧内容主体-->
-      <el-main :class="isCollapse ? 'm-el-main-width-64' : 'm-el-main-width-190'">
+      <el-main :class="isCollapse ? 'main-Collapse' : 'main-no-Collapse'">
         <!--加 key 让组件被重用时 重新执行生命周期 否则在编辑文章页面路由到写文章页面时 数据被重用-->
         <router-view :key="route.fullPath"/>
       </el-main>
@@ -198,25 +198,28 @@ const logout = () => {
   overflow-x: hidden;
 }
 
-.m-el-main-width-190 {
+.main-no-Collapse {
   width: calc(100vw - 190px);
 }
 
-.m-el-main-width-64 {
+.main-Collapse {
   width: calc(100vw - 64px);
 }
 
-.iconfont {
-  margin-right: 20px;
-  font-size: 20px;
+.menu-icon {
+  margin-right: 18px;
+  font-size: 18px;
+  color: #909399;
 }
 
-.sub-menu .iconfont {
-  vertical-align: middle;
-  margin-right: 5px;
-  width: 24px;
-  text-align: center;
-  display: inline-block;
+.el-menu-item {
+  .iconfont {
+    vertical-align: middle;
+    margin-right: 5px;
+    width: 24px;
+    text-align: center;
+    display: inline-block;
+  }
 }
 
 .toggle-button {
