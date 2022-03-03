@@ -6,6 +6,83 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "736876",
+      "name": "pages",
+      "font_class": "pages",
+      "unicode": "e70d",
+      "unicode_decimal": 59149
+    },
+    {
+      "icon_id": "142140",
+      "name": "web",
+      "font_class": "web",
+      "unicode": "e918",
+      "unicode_decimal": 59672
+    },
+    {
+      "icon_id": "969378",
+      "name": "文章管理",
+      "font_class": "svgwrite",
+      "unicode": "e650",
+      "unicode_decimal": 58960
+    },
+    {
+      "icon_id": "1493234",
+      "name": "firends",
+      "font_class": "firends",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "1512527",
+      "name": "comment_fill_light",
+      "font_class": "comment_fill_light",
+      "unicode": "e7e2",
+      "unicode_decimal": 59362
+    },
+    {
+      "icon_id": "4936685",
+      "name": "tags-fill",
+      "font_class": "tags-fill",
+      "unicode": "e86e",
+      "unicode_decimal": 59502
+    },
+    {
+      "icon_id": "5924782",
+      "name": "edit-write",
+      "font_class": "edit-write",
+      "unicode": "e62e",
+      "unicode_decimal": 58926
+    },
+    {
+      "icon_id": "6652220",
+      "name": "about",
+      "font_class": "about",
+      "unicode": "e6b4",
+      "unicode_decimal": 59060
+    },
+    {
+      "icon_id": "12853751",
+      "name": "dynamic",
+      "font_class": "dynamic",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "13691049",
+      "name": "blog",
+      "font_class": "blog",
+      "unicode": "e86c",
+      "unicode_decimal": 59500
+    },
+    {
+      "icon_id": "14112230",
+      "name": "sort",
+      "font_class": "sort",
+      "unicode": "e61b",
+      "unicode_decimal": 58907
+    },
+    {
       "icon_id": "309628",
       "name": "log-out",
       "font_class": "logout",

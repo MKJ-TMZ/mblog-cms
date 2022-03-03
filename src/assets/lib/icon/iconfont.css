@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3216808 */
-  src: url('iconfont.woff2?t=1646228790423') format('woff2'),
-       url('iconfont.woff?t=1646228790423') format('woff'),
-       url('iconfont.ttf?t=1646228790423') format('truetype');
+  src: url('iconfont.woff2?t=1646309452030') format('woff2'),
+       url('iconfont.woff?t=1646309452030') format('woff'),
+       url('iconfont.ttf?t=1646309452030') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,50 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-pages:before {
+  content: "\e70d";
+}
+
+.icon-web:before {
+  content: "\e918";
+}
+
+.icon-svgwrite:before {
+  content: "\e650";
+}
+
+.icon-firends:before {
+  content: "\e619";
+}
+
+.icon-comment_fill_light:before {
+  content: "\e7e2";
+}
+
+.icon-tags-fill:before {
+  content: "\e86e";
+}
+
+.icon-edit-write:before {
+  content: "\e62e";
+}
+
+.icon-about:before {
+  content: "\e6b4";
+}
+
+.icon-dynamic:before {
+  content: "\e600";
+}
+
+.icon-blog:before {
+  content: "\e86c";
+}
+
+.icon-sort:before {
+  content: "\e61b";
 }
 
 .icon-logout:before {
