@@ -11,7 +11,6 @@ import { msgSuccess } from "@/utils/message";
 
 const router = useRouter()
 const store = useStore()
-type FormInstance = InstanceType<typeof ElForm>
 
 const loginForm = reactive<any>({
   username: '',
@@ -21,20 +20,20 @@ const loginFormRules = reactive<any>({
   username: [{required: true, message: '请输入用户名', trigger: 'blur'},],
   password: [{required: true, message: '请输入密码', trigger: 'blur'},]
 })
-const loginFormRef = ref<FormInstance>()
+const loginFormRef = ref<any>()
 
-const resetLoginForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) {
+const resetLoginForm = () => {
+  if (!loginFormRef.value) {
     return
   }
-  formEl.resetFields()
+  loginFormRef.value.resetFields()
 }
 
-const handleLogin = (formEl: FormInstance | undefined) => {
-  if (!formEl) {
+const handleLogin = () => {
+  if (!loginFormRef.value) {
     return;
   }
-  formEl.validate((valid) => {
+  loginFormRef.value.validate((valid: any) => {
     if (valid) {
       const data = login(loginForm)
       msgSuccess('登录成功')
@@ -63,11 +62,11 @@ const handleLogin = (formEl: FormInstance | undefined) => {
           <el-input v-model="loginForm.username" :prefix-icon="UserFilled"/>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input v-model="loginForm.password" :prefix-icon="Lock" show-password @keyup.native.enter="handleLogin(loginFormRef)"/>
+          <el-input v-model="loginForm.password" :prefix-icon="Lock" show-password @keyup.native.enter="handleLogin"/>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleLogin(loginFormRef)">登录</el-button>
-          <el-button type="info" @click="resetLoginForm(loginFormRef)">重置</el-button>
+          <el-button type="primary" @click="handleLogin">登录</el-button>
+          <el-button type="info" @click="resetLoginForm">重置</el-button>
         </el-form-item>
       </el-form>
     </div>

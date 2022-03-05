@@ -8,38 +8,38 @@ const menuList = [
       {
         title: '写文章',
         id: 11,
-        path: '/blogManage/writeBlog'
+        path: '/blogManage/blog/write'
       },
       {
         title: '写动态',
         id: 12,
-        path: '/blogManage/writeMoments'
+        path: '/blogManage/moment/write'
       },
       {
         title: '文章管理',
         id: 13,
-        path: '/blogManage/blogs'
+        path: '/blogManage/blog/list'
       },
       {
         title: '动态管理',
         id: 14,
-        path: '/blogManage/moments'
+        path: '/blogManage/moment/list'
       },
       {
         title: '分类管理',
         id: 15,
-        path: '/blogManage/categories'
+        path: '/blogManage/category/list'
       },
       {
         title: '标签管理',
         id: 16,
-        path: '/blogManage/tags'
+        path: '/blogManage/tag/list'
       },
-      {
-        title: '评论管理',
-        id: 17,
-        path: '/blogManage/comments'
-      }
+      // {
+      //   title: '评论管理',
+      //   id: 17,
+      //   path: '/blogManage/comment/list'
+      // }
     ]
   },
   {

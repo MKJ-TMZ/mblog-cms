@@ -10,6 +10,7 @@ const routes: any[] = [
   },
   {
     path: '/login',
+    name: 'login',
     component: () => import('@/views/Login.vue'),
     meta: {
       title: '后台管理登录'
@@ -18,15 +19,40 @@ const routes: any[] = [
   {
     path: '/home',
     component: () => import('@/views/Home.vue'),
-    redirect: '/blogManage/writeBlog',
+    redirect: '/blogManage/blog/write',
     children: [
       {
-        path: '/blogManage/writeBlog',
-        component: () => import('@/views/blogManage/WriteBlog.vue'),
+        path: '/blogManage/blog/write',
+        name: 'blogWrite',
+        component: () => import('@/views/blogManage/BlogEdit.vue'),
         meta: {
           title: '写文章'
         }
-      }
+      },
+      {
+        path: '/blogManage/blog/edit/:id',
+        name: 'blogEdit',
+        component: () => import('@/views/blogManage/BlogEdit.vue'),
+        meta: {
+          title: '编辑文章'
+        }
+      },
+      {
+        path: '/blogManage/moment/write',
+        name: 'momentWrite',
+        component: () => import('@/views/blogManage/MomentEdit.vue'),
+        meta: {
+          title: '写动态'
+        }
+      },
+      {
+        path: '/blogManage/moment/edit/:id',
+        name: 'momentEdit',
+        component: () => import('@/views/blogManage/MomentEdit.vue'),
+        meta: {
+          title: '编辑动态'
+        }
+      },
     ]
   }
 ]
