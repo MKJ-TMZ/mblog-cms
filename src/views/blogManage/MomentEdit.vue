@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, onBeforeMount, reactive } from "vue";
-import { getMomentDataById, saveMoment } from "@/api/momentEdit";
+import { getMomentDataById, saveMoment } from "@/api/moment";
 import { useRoute, useRouter } from "vue-router";
 import { msgError, msgSuccess } from "@/utils/message";
 import Breadcrumb from "@/components/Breadcrumb.vue";

@@ -3,7 +3,7 @@ import { menuList, menuIcons, defaultOpenedMenu } from "@/config/menuConfig";
 import { onBeforeMount, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { msgError, msgSuccess } from "@/utils/message";
-import { Expand, Fold } from "_@element-plus_icons-vue@1.0.0@@element-plus/icons-vue";
+import { Expand, Fold } from "@element-plus/icons-vue";
 import { useStore } from "vuex";
 
 const router = useRouter()

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onBeforeMount, reactive, ref } from "vue";
 import Breadcrumb from "@/components/Breadcrumb.vue";
-import { getBlogDataById, getCategoryAndTag, saveBlog } from "@/api/blogEdit";
+import { getBlogDataById, getCategoryAndTag, saveBlog } from "@/api/blog";
 import { msgError, msgSuccess } from "@/utils/message";
 import { isEmpty, isNotEmpty } from "@/utils/func";
 import { useRoute, useRouter } from "vue-router";
@@ -15,6 +15,7 @@ const dialogVisible = ref<boolean>(false)
 const radio = ref<string>('public')
 const formRef = ref<any>()
 const form = reactive<any>({
+  id: '',
   title: '',
   firstPicture: '',
   description: '',
@@ -81,7 +82,6 @@ const handleFormSubmit = (isDraft: boolean) => {
 
 const handleDialogSubmit = () => {
   if (radio.value === 'password') {
-    console.log(isNotEmpty(form.password))
     if (isEmpty(form.password)) {
       msgError("密码保护模式必须填写密码")
       return;
@@ -109,6 +109,7 @@ const getBlogById = () => {
   data.tags.forEach(item => {
     tagList.push(item.name)
   })
+  form.id = data.id
   form.title = data.title
   form.firstPicture = data.firstPicture
   form.description = data.description
