@@ -53,6 +53,14 @@ const routes: any[] = [
           title: '编辑动态'
         }
       },
+      {
+        path: '/blogManage/blog/list',
+        name: 'blogList',
+        component: () => import('@/views/blogManage/blogList.vue'),
+        meta: {
+          title: '文章管理'
+        }
+      },
     ]
   }
 ]
