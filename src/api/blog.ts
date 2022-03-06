@@ -83,7 +83,7 @@ export function getCategoryListData() {
   ]
 }
 
-export function getBlogListData(queryInfo: any) {
+export function getBlogListData(queryInfo?: any) {
   return {
     "total": 3,
     "blogList": [

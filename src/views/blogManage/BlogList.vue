@@ -144,6 +144,7 @@ const handleDeleteBlogById = (id: string) => {
   ).then(() => {
     deleteBlogById(id)
     getBlogList()
+    msgSuccess('刪除成功')
   }).catch(() => {
     message('已取消')
   })
@@ -192,7 +193,7 @@ const handleDeleteBlogById = (id: string) => {
     </el-table-column>
     <el-table-column label="推荐" width="80">
       <template #default="scope">
-        <el-switch v-model="scope.row.recommend" @change="handleBlogRecommendSwitch(scope.row)"></el-switch>
+        <el-switch v-model="scope.row.recommend" @change="handleBlogRecommendSwitch(scope.row)"/>
       </template>
     </el-table-column>
     <el-table-column label="可见性" width="100">
@@ -203,12 +204,12 @@ const handleDeleteBlogById = (id: string) => {
       </template>
     </el-table-column>
     <el-table-column label="创建时间" width="170">
-      <template v-slot="scope">{{ moment(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') }}</template>
+      <template #default="scope">{{ moment(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') }}</template>
     </el-table-column>
     <el-table-column label="最近更新" width="170">
-      <template v-slot="scope">{{ moment(scope.row.updateTime).format('YYYY-MM-DD HH:mm:ss') }}</template>
+      <template #default="scope">{{ moment(scope.row.updateTime).format('YYYY-MM-DD HH:mm:ss') }}</template>
     </el-table-column>
-    <el-table-column label="操作" width="200">
+    <el-table-column fixed="right" label="操作" width="200">
       <template #default="scope">
         <el-button type="primary" size="small" :icon="Edit" @click="toBlogEditPage(scope.row.id)">编辑</el-button>
         <el-button type="danger" size="small" :icon="Delete" @click="handleDeleteBlogById(scope.row.id)">删除</el-button>
@@ -224,9 +225,10 @@ const handleDeleteBlogById = (id: string) => {
       :page-sizes="[10, 20, 30, 50]"
       :page-size="queryInfo.pageSize"
       :total="total"
-      small
       layout="total, sizes, prev, pager, next, jumper"
-      background/>
+      background
+      small
+  />
 
   <!--编辑可见性状态对话框-->
   <el-dialog title="博客可见性" width="30%" v-model="dialogVisible">
