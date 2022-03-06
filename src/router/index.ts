@@ -61,6 +61,14 @@ const routes: any[] = [
           title: '文章管理'
         }
       },
+      {
+        path: '/blogManage/moment/list',
+        name: 'momentList',
+        component: () => import('@/views/blogManage/momentList.vue'),
+        meta: {
+          title: '动态管理'
+        }
+      },
     ]
   }
 ]
