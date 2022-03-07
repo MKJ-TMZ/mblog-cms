@@ -69,6 +69,14 @@ const routes: any[] = [
           title: '动态管理'
         }
       },
+      {
+        path: '/blogManage/category/list',
+        name: 'categoryList',
+        component: () => import('@/views/blogManage/CategoryList.vue'),
+        meta: {
+          title: '分类管理'
+        }
+      },
     ]
   }
 ]

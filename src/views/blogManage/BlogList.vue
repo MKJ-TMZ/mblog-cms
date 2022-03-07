@@ -187,7 +187,7 @@ const handleDeleteBlogById = (id: string) => {
     <el-table-column label="标题" prop="title" show-overflow-tooltip/>
     <el-table-column label="分类" prop="category.name" width="150"/>
     <el-table-column label="置顶" width="80">
-      <template  #default="scope">
+      <template #default="scope">
         <el-switch v-model="scope.row.top" @change="handleBlogTopSwitch(scope.row)"/>
       </template>
     </el-table-column>
