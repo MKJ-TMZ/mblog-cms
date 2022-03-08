@@ -55,7 +55,7 @@ const menuList = [
       {
         id: 22,
         title: '友链管理',
-        path: '/pageManage/friends'
+        path: '/pageManage/friend/list'
       },
       {
         id: 23,

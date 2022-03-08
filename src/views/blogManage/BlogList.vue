@@ -276,9 +276,4 @@ const handleDeleteBlogById = (id: string) => {
 :deep(.el-input-group__prepend) {
   background-color: #fff !important;
 }
-
-.m-table {
-  margin-top: 15px;
-  margin-bottom: 15px;
-}
 </style>

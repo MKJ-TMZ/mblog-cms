@@ -2,9 +2,8 @@
 import { onBeforeMount, reactive, ref } from "vue";
 import { deleteCategoryById, getCategoryListData, saveCategory } from "@/api/category";
 import Breadcrumb from "@/components/Breadcrumb.vue";
-import { Plus, Edit, Delete } from "@element-plus/icons-vue";
-import { ElMessageBox } from "_element-plus@2.0.4@element-plus";
-import { deleteBlogById } from "@/api/blog";
+import { Delete, Edit, Plus } from "@element-plus/icons-vue";
+import { ElMessageBox } from "element-plus";
 import { message, msgError, msgSuccess } from "@/utils/message";
 
 const queryInfo = reactive<any>({
@@ -147,8 +146,5 @@ const handleDeleteCategoryById = (id: string) => {
 </template>
 
 <style scoped>
-.m-table {
-  margin-top: 15px;
-  margin-bottom: 15px;
-}
+
 </style>

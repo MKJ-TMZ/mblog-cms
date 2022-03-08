@@ -77,6 +77,14 @@ const routes: any[] = [
           title: '分类管理'
         }
       },
+      {
+        path: '/blogManage/tag/list',
+        name: 'tagList',
+        component: () => import('@/views/blogManage/TagList.vue'),
+        meta: {
+          title: '标签管理'
+        }
+      },
     ]
   }
 ]
