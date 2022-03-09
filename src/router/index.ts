@@ -85,6 +85,14 @@ const routes: any[] = [
           title: '标签管理'
         }
       },
+      {
+        path: '/pageManage/siteSettings',
+        name: 'tagList',
+        component: () => import('@/views/pageManage/SiteSetting.vue'),
+        meta: {
+          title: '站点管理'
+        }
+      },
     ]
   }
 ]
