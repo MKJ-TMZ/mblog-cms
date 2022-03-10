@@ -87,10 +87,18 @@ const routes: any[] = [
       },
       {
         path: '/pageManage/siteSettings',
-        name: 'tagList',
+        name: 'siteSettings',
         component: () => import('@/views/pageManage/SiteSetting.vue'),
         meta: {
           title: '站点管理'
+        }
+      },
+      {
+        path: '/pageManage/friend/list',
+        name: 'friendList',
+        component: () => import('@/views/pageManage/FriendList.vue'),
+        meta: {
+          title: '友链管理'
         }
       },
     ]

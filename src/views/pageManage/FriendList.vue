@@ -1,0 +1,237 @@
+<script lang="ts" setup>
+import { onBeforeMount, reactive, ref } from "vue";
+import {
+  deleteFriendById,
+  getFriendInfoData,
+  getFriendListData,
+  saveFriend,
+  saveFriendContent,
+  updatePublished
+} from "@/api/friend";
+import { ElMessageBox } from "element-plus";
+import { message, msgError, msgSuccess } from "@/utils/message";
+import Breadcrumb from "@/components/Breadcrumb.vue";
+import { Delete, Edit, Plus } from "@element-plus/icons-vue";
+import * as moment from 'moment'
+
+const infoForm = reactive<any>({
+  content: '',
+  commentEnabled: true,
+})
+const queryInfo = reactive<any>({
+  pageNum: 1,
+  pageSize: 10
+})
+const friendList = ref<any[]>([])
+const total = ref<number>(0)
+const dialogVisible = ref<boolean>(false)
+const dialogForm = reactive<any>({
+  id: '',
+  nickname: '',
+  description: '',
+  website: '',
+  avatar: '',
+  published: true
+})
+const formRef = ref<any>()
+const formRules = {
+  nickname: [{required: true, message: '请输入昵称', trigger: 'blur'}],
+  description: [{required: true, message: '请输入描述', trigger: 'blur'}],
+  website: [{required: true, message: '请输入网站', trigger: 'blur'}],
+  avatar: [{required: true, message: '请输入头像URL', trigger: 'blur'}],
+}
+
+onBeforeMount(() => {
+  init()
+})
+
+const init = () => {
+  getFriendList()
+  getFriendInfo()
+}
+
+const getFriendList = () => {
+  const data = getFriendListData()
+  friendList.value = data.list
+  total.value = data.total
+}
+
+const getFriendInfo = () => {
+  const data = getFriendInfoData()
+  infoForm.content = data.content
+  infoForm.commentEnabled = data.commentEnabled
+}
+
+const handleSaveFriendContent = () => {
+  saveFriendContent(infoForm.content)
+  getFriendInfo()
+}
+
+const handleFriendCommentSwitch = () => {
+  saveFriendContent(infoForm.commentEnabled)
+}
+
+const handleSizeChange = (newSize: number) => {
+  queryInfo.pageSize = newSize
+  getFriendList()
+}
+
+const handleCurrentChange = (newPage: number) => {
+  queryInfo.pageNum = newPage
+  getFriendList()
+}
+
+const handleFriendPublishedSwitch = (row: any) => {
+  updatePublished(row.id, row.published)
+}
+
+const handleDeleteFriendById = (id : string) => {
+  ElMessageBox.confirm(
+      `此操作将永久删除该友链，是否删除?`,
+      '提示',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        dangerouslyUseHTMLString: true
+      }
+  ).then(() => {
+    deleteFriendById(id)
+    getFriendList()
+    msgSuccess('刪除成功')
+  }).catch(() => {
+    message('已取消')
+  })
+}
+
+const handleEditClick = (row: any) => {
+  dialogForm.id = row['id']
+  dialogForm.nickname = row['nickname']
+  dialogForm.description = row['description']
+  dialogForm.website = row['website']
+  dialogForm.avatar = row['avatar']
+  dialogVisible.value = true
+}
+
+const handleDialogClosed = () => {
+  dialogForm.id = ''
+  dialogForm.nickname = ''
+  dialogForm.description = ''
+  dialogForm.website = ''
+  dialogForm.avatar = ''
+}
+
+const HandleSaveFriend = () => {
+  if (!formRef.value) {
+    return;
+  }
+  formRef.value.validate((valid: any) => {
+    if (valid) {
+      saveFriend(dialogForm)
+      dialogVisible.value = false
+    } else {
+      msgError('请填写必要的表单项')
+      return;
+    }
+  })
+}
+</script>
+
+<template>
+  <!--面包屑导航-->
+  <Breadcrumb parentTitle="页面管理"/>
+
+  <!--添加按钮-->
+  <el-row :gutter="10">
+    <el-col :span="6">
+      <el-button type="primary" :icon="Plus" @click="dialogVisible = true">添加友链</el-button>
+      <el-switch style="margin-left: 30px" v-model="infoForm.commentEnabled" active-text="页面评论" @change="handleFriendCommentSwitch"/>
+    </el-col>
+  </el-row>
+
+  <el-table class="m-table" :data="friendList">
+    <el-table-column type="index" width="50"/>
+    <el-table-column label="头像" width="100">
+      <template #default="scope">
+        <el-avatar shape="square" :size="60" fit="contain" :src="scope.row.avatar"/>
+      </template>
+    </el-table-column>
+    <el-table-column label="昵称" prop="nickname"  show-overflow-tooltip/>
+    <el-table-column label="描述" prop="description"  show-overflow-tooltip/>
+    <el-table-column label="站点" prop="website"  show-overflow-tooltip/>
+    <el-table-column label="是否公开" width="100">
+      <template #default="scope">
+        <el-switch v-model="scope.row.published" @change="handleFriendPublishedSwitch(scope.row)"/>
+      </template>
+    </el-table-column>
+    <el-table-column label="浏览次数" prop="views" width="100"/>
+    <el-table-column label="创建时间" width="170">
+      <template #default="scope">{{ moment(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') }}</template>
+    </el-table-column>
+    <el-table-column fixed="right" label="操作" width="200">
+      <template #default="scope">
+        <el-button type="primary" size="small" :icon="Edit" @click="handleEditClick(scope.row)">编辑</el-button>
+        <el-button type="danger" size="small" :icon="Delete" @click="handleDeleteFriendById(scope.row.id)">删除</el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+
+  <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="queryInfo.pageNum"
+      :page-sizes="[10, 20, 30, 50]"
+      :page-size="queryInfo.pageSize"
+      :total="total"
+      layout="total, sizes, prev, pager, next, jumper"
+      background
+      small
+  />
+
+  <!--友链页面信息-->
+  <el-form size="large" style="margin-top: 20px" label-position="top">
+    <el-form-item label="友链页面信息">
+      <mavon-editor class="m-width-full" v-model="infoForm.content"/>
+    </el-form-item>
+    <el-form-item class="form-buttons">
+      <el-button type="primary" @click="handleSaveFriendContent">保存</el-button>
+    </el-form-item>
+  </el-form>
+
+  <!--对话框-->
+  <el-dialog title="添加友链" width="40%" v-model="dialogVisible" @close="handleDialogClosed">
+    <!--内容主体-->
+    <el-form size="large" :model="dialogForm" ref="formRef" :rules="formRules" label-width="80px">
+      <el-form-item label="昵称" prop="nickname">
+        <el-input v-model="dialogForm.nickname"/>
+      </el-form-item>
+      <el-form-item label="描述" prop="description">
+        <el-input v-model="dialogForm.description"/>
+      </el-form-item>
+      <el-form-item label="网站" prop="website">
+        <el-input v-model="dialogForm.website"/>
+      </el-form-item>
+      <el-form-item label="头像URL" prop="avatar">
+        <el-input v-model="dialogForm.avatar"/>
+      </el-form-item>
+    </el-form>
+    <!--底部-->
+    <template #footer>
+      <span>
+				<el-button size="large" @click="dialogVisible=false">取 消</el-button>
+				<el-button size="large" type="primary" @click="HandleSaveFriend">确 定</el-button>
+			</span>
+    </template>
+  </el-dialog>
+</template>
+
+<style lang="less" scoped>
+:deep(label) {
+  line-height: 40px !important;
+}
+
+:deep(.form-buttons) {
+  .el-form-item__content {
+    justify-content: flex-end;
+  }
+}
+</style>
