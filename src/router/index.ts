@@ -101,6 +101,14 @@ const routes: any[] = [
           title: '友链管理'
         }
       },
+      {
+        path: '/pageManage/about',
+        name: 'about',
+        component: () => import('@/views/pageManage/About.vue'),
+        meta: {
+          title: '关于我'
+        }
+      },
     ]
   }
 ]
