@@ -13,8 +13,8 @@
     "element-plus": "^2.0.3",
     "mavon-editor": "^3.0.0-beta",
     "moment": "^2.29.1",
-    "nprogress": "^1.0.0-1",
     "vue": "^3.2.25",
+    "vue-nprogress-ts": "^1.0.0",
     "vue-router": "^4.0.12",
     "vuex": "^4.0.2"
   },
