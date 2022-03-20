@@ -7,7 +7,8 @@ import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { SAVE_WEB_TITLE_SUFFIX } from "@/store/mutations-types";
 import { getSiteInfo } from "@/api/siteSetting";
-import { msgSuccess } from "@/utils/message";
+import { msgError, msgSuccess } from "@/utils/message";
+import { isNotEmpty } from "@/utils/func";
 
 const router = useRouter()
 const store = useStore()
@@ -35,13 +36,24 @@ const handleLogin = () => {
   }
   loginFormRef.value.validate((valid: any) => {
     if (valid) {
-      const data = login(loginForm)
-      msgSuccess('登录成功')
-      const siteInfo = getSiteInfo()
-      window.localStorage.setItem('token', data.token)
-      window.localStorage.setItem('user', JSON.stringify(data.user))
-      store.commit(SAVE_WEB_TITLE_SUFFIX, siteInfo.webTitleSuffix)
-      router.push('/home')
+      login(loginForm).then((res: any) => {
+        if (res.code === 200) {
+          const {token, user} = res.data
+          window.localStorage.setItem('token', token)
+          if (isNotEmpty(user)) {
+            window.localStorage.setItem('user', JSON.stringify(user))
+          }
+          msgSuccess('登录成功')
+          const siteInfo = getSiteInfo()
+          store.commit(SAVE_WEB_TITLE_SUFFIX, siteInfo.webTitleSuffix)
+          router.push('/home')
+        } else {
+          msgError(res.msg)
+        }
+      }).catch((error: any) => {
+        msgError('登录失败')
+        console.log(error.msg)
+      })
     } else {
       return false
     }

@@ -23,6 +23,7 @@ const getUserInfo = () => {
   const localUserInfo = window.localStorage.getItem('user') || '{}'
   if (isEmpty(localUserInfo) || Object.keys(localUserInfo).length === 0) {
     logoutForError()
+    router.push('/login')
   } else {
     user.value = JSON.parse(localUserInfo)
   }
