@@ -5,6 +5,7 @@ import { useRoute, useRouter } from "vue-router";
 import { msgError, msgSuccess } from "@/utils/message";
 import { Expand, Fold } from "@element-plus/icons-vue";
 import { useStore } from "vuex";
+import { isEmpty, isNotEmpty, logoutForError } from "@/utils/func";
 
 const router = useRouter()
 const route = useRoute()
@@ -19,11 +20,11 @@ onBeforeMount(() => {
 })
 
 const getUserInfo = () => {
-  user.value = JSON.parse(window.localStorage.getItem('user') || '{}')
-  if (Object.keys(user.value).length === 0) {
-    window.localStorage.clear()
-    router.push('/login')
-    msgError('登录超时')
+  const localUserInfo = window.localStorage.getItem('user') || '{}'
+  if (isEmpty(localUserInfo) || Object.keys(localUserInfo).length === 0) {
+    logoutForError()
+  } else {
+    user.value = JSON.parse(localUserInfo)
   }
 }
 
