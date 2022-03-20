@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { menuList, menuIcons, defaultOpenedMenu } from "@/config/menuConfig";
+import { defaultOpenedMenu, menuIcons, menuList } from "@/config/menuConfig";
 import { onBeforeMount, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { msgError, msgSuccess } from "@/utils/message";
+import { msgSuccess } from "@/utils/message";
 import { Expand, Fold } from "@element-plus/icons-vue";
 import { useStore } from "vuex";
-import { isEmpty, isNotEmpty, logoutForError } from "@/utils/func";
+import { isEmpty, logoutForError } from "@/utils/func";
 
 const router = useRouter()
 const route = useRoute()
