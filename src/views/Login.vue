@@ -9,6 +9,7 @@ import { SAVE_WEB_TITLE_SUFFIX } from "@/store/mutations-types";
 import { getSiteInfo } from "@/api/siteSetting";
 import { msgError, msgSuccess } from "@/utils/message";
 import { isNotEmpty } from "@/utils/func";
+import { Md5 } from 'ts-md5/dist/md5';
 
 const router = useRouter()
 const store = useStore()
@@ -36,7 +37,11 @@ const handleLogin = () => {
   }
   loginFormRef.value.validate((valid: any) => {
     if (valid) {
-      login(loginForm).then((res: any) => {
+      const param = {
+        username: loginForm.username,
+        password: Md5.hashStr(loginForm.password)
+      }
+      login(param).then((res: any) => {
         if (res.code === 200) {
           const {token, user} = res.data
           window.localStorage.setItem('token', token)
@@ -69,12 +74,13 @@ const handleLogin = () => {
         <img src="/img/avatar.jpg" alt="">
       </div>
       <!--登录表单-->
-      <el-form  size="large" ref="loginFormRef" :model="loginForm" :rules="loginFormRules" class="login-form">
+      <el-form size="large" ref="loginFormRef" :model="loginForm" :rules="loginFormRules" class="login-form">
         <el-form-item prop="username">
           <el-input v-model="loginForm.username" :prefix-icon="UserFilled"/>
         </el-form-item>
-        <el-form-item prop="password">
-          <el-input v-model="loginForm.password" :prefix-icon="Lock" show-password @keyup.native.enter="handleLogin"/>
+        <el-form-item prop="publicPassword">
+          <el-input v-model="loginForm.password" :prefix-icon="Lock"
+                    show-password @keyup.native.enter="handleLogin"/>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleLogin">登录</el-button>
