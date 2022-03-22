@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import { onBeforeMount, reactive, ref } from "vue";
 import Breadcrumb from "@/components/Breadcrumb.vue";
-import { getBlogDataById, getCategoryAndTag, saveBlog } from "@/api/blog";
+import { getBlogDataById, saveBlog } from "@/api/blog";
 import { msgError, msgSuccess } from "@/utils/message";
 import { isEmpty, isNotEmpty } from "@/utils/func";
 import { useRoute, useRouter } from "vue-router";
+import { getTagListData } from "@/api/tag";
+import { getCategoryListData } from "@/api/category";
 
 const router = useRouter()
 const route = useRoute()
@@ -17,28 +19,28 @@ const formRef = ref<any>()
 const form = reactive<any>({
   id: '',
   title: '',
-  firstPicture: '',
+  coverPic: '',
   description: '',
   content: '',
-  category: null,
-  tagList: [],
+  categoryName: '',
+  tagNameSet: [],
   wordCounts: 0,
   readTime: 0,
   viewCounts: 0,
-  appreciation: false,
-  recommend: false,
-  commentEnabled: false,
-  top: false,
-  published: false,
+  isAppreciation: false,
+  isRecommend: false,
+  isCommentEnabled: false,
+  isTop: false,
+  isPublished: false,
   password: '',
   // 是否是草稿
   isDraft: false
 })
 const formRules = {
   title: [{required: true, message: '请输入标题', trigger: 'change'}],
-  firstPicture: [{required: true, message: '请输入首图链接', trigger: 'change'}],
-  category: [{required: true, message: '请选择分类', trigger: 'change'}],
-  tagList: [{required: true, message: '请选择标签', trigger: 'change'}],
+  coverPic: [{required: true, message: '请输入首图链接', trigger: 'change'}],
+  categoryName: [{required: true, message: '请选择分类', trigger: 'change'}],
+  tagNameSet: [{required: true, message: '请选择标签', trigger: 'change'}],
   wordCounts: [{required: true, message: '请输入文章字数', trigger: 'change'}],
   description: [{required: true, message: '请输入文章描述', trigger: 'change'}],
   content: [{required: true, message: '请输入文章正文', trigger: 'change'}]
@@ -49,12 +51,33 @@ onBeforeMount(() => {
 })
 
 const init = () => {
-  const categoryAndTag = getCategoryAndTag();
-  categoryList.value = categoryAndTag.categories
-  tagList.value = categoryAndTag.tags
+  getTagList()
+  getCategoryList()
   if (route.name === 'blogEdit') {
     getBlogById()
   }
+}
+
+const getTagList = () => {
+  getTagListData().then((res: any) => {
+    if (res.code === 200) {
+      tagList.value = res.data
+    }
+  }).catch((error: any) => {
+    msgError('获取标签失败')
+    console.log(error.msg)
+  })
+}
+
+const getCategoryList = () => {
+  getCategoryListData().then((res: any) => {
+    if (res.code === 200) {
+      categoryList.value = res.data
+    }
+  }).catch((error: any) => {
+    msgError('获取分类失败')
+    console.log(error.msg)
+  })
 }
 
 const handleWordCountsChange = () => {
@@ -91,13 +114,13 @@ const handleDialogSubmit = () => {
   }
 
   if (radio.value === 'private') {
-    form.appreciation = false
-    form.recommend = false
-    form.commentEnabled = false
-    form.top = false
-    form.published = false
+    form.isAppreciation = false
+    form.isRecommend = false
+    form.isCommentEnabled = false
+    form.isTop = false
+    form.isPublished = false
   } else {
-    form.published = true
+    form.isPublished = true
   }
 
   handleSaveBlog()
@@ -105,33 +128,41 @@ const handleDialogSubmit = () => {
 
 const getBlogById = () => {
   const data = getBlogDataById(route.params.id as string)
-  const tagList: string[] = []
-  data.tags.forEach(item => {
-    tagList.push(item.name)
-  })
   form.id = data.id
   form.title = data.title
-  form.firstPicture = data.firstPicture
+  form.coverPic = data.coverPic
   form.description = data.description
   form.content = data.content
-  form.category = data.category
-  form.tagList = tagList
+  form.categoryName = data.category
+  form.tagNameSet = data.tagList
   form.wordCounts = data.wordCounts
   form.readTime = data.readTime
   form.viewCounts = data.viewCounts
-  form.appreciation = data.appreciation
-  form.recommend = data.recommend
-  form.commentEnabled = data.commentEnabled
-  form.top = data.top
-  form.published = data.published
+  form.isAppreciation = data.isAppreciation
+  form.isRecommend = data.isRecommend
+  form.isCommentEnabled = data.isCommentEnabled
+  form.isTop = data.isTop
+  form.isPublished = data.isPublished
   form.password = data.password
-  radio.value = form.published ? (isNotEmpty(form.password) ? 'password' : 'public') : 'private'
+  radio.value = form.isPublished ? (isNotEmpty(form.password) ? 'password' : 'public') : 'private'
 }
 
 const handleSaveBlog = () => {
-  saveBlog(form)
-  msgSuccess('发布成功')
-  router.push('/blogManage/blog/list')
+  saveBlog(form).then((res: any) => {
+    if (res.code === 200) {
+      if (form.isDraft) {
+        msgSuccess('保存成功')
+      } else {
+        msgSuccess('发布成功')
+        router.push('/blogManage/blog/list')
+      }
+    } else {
+      msgError(res.msg)
+    }
+  }).catch((error: any) => {
+    msgError('发布失败')
+    console.log(error.msg)
+  })
 }
 </script>
 
@@ -154,29 +185,29 @@ const handleSaveBlog = () => {
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="文章首图URL" prop="firstPicture">
-          <el-input v-model="form.firstPicture" placeholder="文章首图，用于随机文章展示"/>
+        <el-form-item label="封面图片URL" prop="coverPic">
+          <el-input v-model="form.coverPic" placeholder="文章首图，用于随机文章展示"/>
         </el-form-item>
       </el-col>
     </el-row>
     <el-row :gutter="20">
       <el-col :span="6">
-        <el-form-item label="分类" prop="category">
+        <el-form-item label="分类" prop="categoryName">
           <el-select
-              v-model="form.category"
+              v-model="form.categoryName"
               placeholder="请选择分类（输入可添加新分类）"
               class="m-width-full"
               filterable
               allow-create
           >
-            <el-option :label="item.name" :value="item.id" v-for="item in categoryList" :key="item.id"/>
+            <el-option :label="item.name" :value="item.name" v-for="item in categoryList" :key="item.id"/>
           </el-select>
         </el-form-item>
       </el-col>
       <el-col :span="6">
-        <el-form-item label="标签" prop="tagList">
+        <el-form-item label="标签" prop="tagNameSet">
           <el-select
-              v-model="form.tagList"
+              v-model="form.tagNameSet"
               placeholder="请选择标签（输入可添加新标签）"
               class="m-width-full"
               filterable
@@ -242,16 +273,16 @@ const handleSaveBlog = () => {
       <el-form-item v-if="radio !== 'private'">
         <el-row class="m-width-full">
           <el-col :span="6">
-            <el-switch v-model="form.appreciation" active-text="赞赏"></el-switch>
+            <el-switch v-model="form.isAppreciation" active-text="赞赏"></el-switch>
           </el-col>
           <el-col :span="6">
-            <el-switch v-model="form.recommend" active-text="推荐"></el-switch>
+            <el-switch v-model="form.isRecommend" active-text="推荐"></el-switch>
           </el-col>
           <el-col :span="6">
-            <el-switch v-model="form.commentEnabled" active-text="评论"></el-switch>
+            <el-switch v-model="form.isCommentEnabled" active-text="评论"></el-switch>
           </el-col>
           <el-col :span="6">
-            <el-switch v-model="form.top" active-text="置顶"></el-switch>
+            <el-switch v-model="form.isTop" active-text="置顶"></el-switch>
           </el-col>
         </el-row>
       </el-form-item>
@@ -261,7 +292,7 @@ const handleSaveBlog = () => {
     <template #footer>
       <span>
 				<el-button size="large" @click="dialogVisible=false">取 消</el-button>
-				<el-button size="large" type="primary" @click="handleDialogSubmit">保存</el-button>
+				<el-button size="large" type="primary" @click="handleDialogSubmit">保 存</el-button>
 			</span>
     </template>
   </el-dialog>

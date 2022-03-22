@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onBeforeMount, reactive, ref } from "vue";
-import { deleteCategoryById, getCategoryListData, saveCategory } from "@/api/category";
+import { deleteCategoryById, getCategoryPageData, saveCategory } from "@/api/category";
 import Breadcrumb from "@/components/Breadcrumb.vue";
 import { Delete, Edit, Plus } from "@element-plus/icons-vue";
 import { ElMessageBox } from "element-plus";
@@ -31,7 +31,7 @@ const init = () => {
 }
 
 const getCategoryList = () => {
-  const data = getCategoryListData(queryInfo)
+  const data = getCategoryPageData(queryInfo)
   categoryList.value = data.list;
   total.value = data.total
 }

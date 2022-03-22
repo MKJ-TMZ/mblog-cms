@@ -1,19 +1,34 @@
 import axios from "axios";
-import NProgress from 'vue-nprogress-ts/src/nprogress'
-import 'vue-nprogress-ts/lib/nprogress.min.css'
-import { msgError } from "@/utils/message";
-
-const nprogress = new NProgress()
+// @ts-ignore
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+import { isNotEmpty } from "@/utils/func";
 
 const request = axios.create({
   baseURL: 'http://localhost:8888/admin/',
   timeout: 10000,
 })
 
+// 请求拦截
+request.interceptors.request.use((config: any) => {
+    console.log(window.location.pathname !== '/login')
+    if (window.location.pathname !== '/login') {
+      const token = window.localStorage.getItem('token') || ''
+      if (isNotEmpty(token)) {
+        config.headers.Authorization = token
+      } else {
+        window.location.href = '/login'
+      }
+    }
+    NProgress.start()
+    return config
+  }
+)
+
 // 响应拦截
 request.interceptors.response.use(
   (res: any) => {
-    nprogress.done()
+    NProgress.done()
     return res.data
   }
 )

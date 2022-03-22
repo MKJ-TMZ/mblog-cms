@@ -3,7 +3,6 @@ import { onBeforeMount, reactive, ref } from "vue";
 import {
   deleteBlogById,
   getBlogListData,
-  getCategoryListData,
   saveBlog,
   updateBlogRecommend,
   updateBlogTop
@@ -13,8 +12,9 @@ import { isEmpty, isNotEmpty } from "@/utils/func";
 import { useRouter } from "vue-router";
 import { ElMessageBox } from "element-plus";
 import Breadcrumb from "@/components/Breadcrumb.vue";
-import { Search, EditPen, Edit, Delete } from "@element-plus/icons-vue";
+import { Delete, Edit, EditPen, Search } from "@element-plus/icons-vue";
 import * as moment from 'moment'
+import { getCategoryListData } from "@/api/category";
 
 const router = useRouter()
 
@@ -47,8 +47,14 @@ const init = () => {
 }
 
 const getCategoryList = () => {
-  const data = getCategoryListData();
-  categoryList.value = data
+  getCategoryListData().then((res: any) => {
+    if (res.code === 200) {
+      categoryList.value = res.data
+    }
+  }).catch((error: any) => {
+    msgError('获取分类失败')
+    console.log(error.msg)
+  })
 }
 
 const getBlogList = () => {
@@ -185,21 +191,21 @@ const handleDeleteBlogById = (id: string) => {
   <el-table class="m-table" size="large" :data="blogList">
     <el-table-column type="index" width="50" />
     <el-table-column label="标题" prop="title" show-overflow-tooltip/>
-    <el-table-column label="分类" prop="category.name" width="150"/>
+    <el-table-column label="分类" prop="categoryName" width="150"/>
     <el-table-column label="置顶" width="80">
       <template #default="scope">
-        <el-switch v-model="scope.row.top" @change="handleBlogTopSwitch(scope.row)"/>
+        <el-switch v-model="scope.row.isTop" @change="handleBlogTopSwitch(scope.row)"/>
       </template>
     </el-table-column>
     <el-table-column label="推荐" width="80">
       <template #default="scope">
-        <el-switch v-model="scope.row.recommend" @change="handleBlogRecommendSwitch(scope.row)"/>
+        <el-switch v-model="scope.row.isRecommend" @change="handleBlogRecommendSwitch(scope.row)"/>
       </template>
     </el-table-column>
     <el-table-column label="可见性" width="100">
       <template #default="scope">
         <el-link :icon="EditPen" :underline="false" @click="HandleBlogVisibilityClick(scope.row)">
-          {{ scope.row.published ? (isNotEmpty(scope.row.password) ? '密码保护' : '公开') : '私密' }}
+          {{ scope.row.isPublished ? (isNotEmpty(scope.row.password) ? '密码保护' : '公开') : '私密' }}
         </el-link>
       </template>
     </el-table-column>

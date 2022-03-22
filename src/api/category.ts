@@ -1,4 +1,6 @@
-export function getCategoryListData(queryInfo: any) {
+import request from "@/utils/request";
+
+export function getCategoryPageData(queryInfo: any) {
   return {
     "total": 2,
     "list": [
@@ -32,6 +34,13 @@ export function getCategoryListData(queryInfo: any) {
     "navigateFirstPage": 1,
     "navigateLastPage": 1
   }
+}
+
+export function getCategoryListData() {
+  return request({
+    url: 'category/list',
+    method: 'GET'
+  })
 }
 
 export function saveCategory(param: any) {

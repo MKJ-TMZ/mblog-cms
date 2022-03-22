@@ -1,4 +1,6 @@
-export function getTagListData(queryInfo: any) {
+import request from "@/utils/request";
+
+export function getTagPageData(queryInfo: any) {
   return {
     "total": 2,
     "list": [
@@ -34,6 +36,13 @@ export function getTagListData(queryInfo: any) {
     "navigateFirstPage": 1,
     "navigateLastPage": 1
   }
+}
+
+export function getTagListData() {
+  return request({
+    url: 'tag/list',
+    method: 'GET'
+  })
 }
 
 export function saveTag(param: any) {

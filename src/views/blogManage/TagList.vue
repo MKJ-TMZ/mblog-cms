@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onBeforeMount, reactive, ref } from "vue";
-import { deleteTagById, getTagListData, saveTag } from "@/api/tag";
+import { deleteTagById, getTagPageData, saveTag } from "@/api/tag";
 import { message, msgError, msgSuccess } from "@/utils/message";
 import { ElMessageBox } from "element-plus";
 import Breadcrumb from "@/components/Breadcrumb.vue";
@@ -48,7 +48,7 @@ const init = () => {
 }
 
 const getTagList = () => {
-  const data = getTagListData(queryInfo)
+  const data = getTagPageData(queryInfo)
   tagList.value = data.list
   total.value = data.total
 }
