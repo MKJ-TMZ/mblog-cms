@@ -1,4 +1,6 @@
 import request from "@/utils/request";
+// @ts-ignore
+import qs from 'qs'
 
 export function saveBlog(param: any) {
   return request({
@@ -35,106 +37,8 @@ export function getBlogDataById(id: string) {
 }
 
 export function getBlogListData(queryInfo?: any) {
-  /*return {
-    "total": 3,
-    "blogList": [
-      {
-        "id": 3,
-        "title": "123",
-        "firstPicture": "https://w.wallhaven.cc/full/mp/wallhaven-mpdr29.jpg",
-        "content": null,
-        "description": null,
-        "published": true,
-        "recommend": false,
-        "appreciation": false,
-        "commentEnabled": false,
-        "top": false,
-        "createTime": "2022-03-03T14:28:58.000+0000",
-        "updateTime": "2022-03-03T14:28:58.000+0000",
-        "views": null,
-        "words": null,
-        "readTime": null,
-        "password": "",
-        "user": null,
-        "category": {
-          "id": 2,
-          "name": "test1",
-          "blogs": []
-        },
-        "tags": []
-      },
-      {
-        "id": 2,
-        "title": "Hello",
-        "firstPicture": "https://w.wallhaven.cc/full/72/wallhaven-72rd8e.jpg",
-        "content": null,
-        "description": null,
-        "published": true,
-        "recommend": false,
-        "appreciation": true,
-        "commentEnabled": true,
-        "top": false,
-        "createTime": "2022-02-19T07:06:16.000+0000",
-        "updateTime": "2022-02-19T07:06:16.000+0000",
-        "views": null,
-        "words": null,
-        "readTime": null,
-        "password": "",
-        "user": null,
-        "category": {
-          "id": 1,
-          "name": "tag",
-          "blogs": []
-        },
-        "tags": []
-      },
-      {
-        "id": 1,
-        "title": "first blog",
-        "firstPicture": "https://w.wallhaven.cc/full/pk/wallhaven-pkgkkp.png",
-        "content": null,
-        "description": null,
-        "published": true,
-        "recommend": true,
-        "appreciation": true,
-        "commentEnabled": true,
-        "top": true,
-        "createTime": "2022-02-04T11:40:12.000+0000",
-        "updateTime": "2022-02-19T12:04:03.000+0000",
-        "views": null,
-        "words": null,
-        "readTime": null,
-        "password": "",
-        "user": null,
-        "category": {
-          "id": 1,
-          "name": "tag",
-          "blogs": []
-        },
-        "tags": []
-      }
-    ],
-    "pageNum": 1,
-    "pageSize": 10,
-    "size": 3,
-    "startRow": 1,
-    "endRow": 3,
-    "pages": 1,
-    "prePage": 0,
-    "nextPage": 0,
-    "isFirstPage": true,
-    "isLastPage": true,
-    "hasPreviousPage": false,
-    "hasNextPage": false,
-    "navigatePages": 8,
-    "navigatePageNums": [
-      1
-    ],
-    "navigateFirstPage": 1,
-    "navigateLastPage": 1
-  }*/
   return request({
-    url: 'blog/page',
+    url: `blog/page?${qs.stringify(queryInfo)}`,
     method: 'GET',
     data: {
       ...queryInfo

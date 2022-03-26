@@ -21,8 +21,8 @@ const router = useRouter()
 const queryInfo = reactive<any>({
   title: '',
   categoryId: null,
-  pageNum: 1,
-  pageSize: 10
+  current: 1,
+  size: 10
 })
 const blogList = ref<any[]>([])
 const categoryList = ref<any[]>([])
@@ -132,12 +132,12 @@ const handleVisibilitySubmit = () => {
 }
 
 const handleSizeChange = (newSize: number) => {
-  queryInfo.pageSize = newSize
+  queryInfo.size = newSize
   getBlogList()
 }
 
 const handleCurrentChange = (newPage: number) => {
-  queryInfo.pageNum = newPage
+  queryInfo.current = newPage
   getBlogList()
 }
 
@@ -189,7 +189,7 @@ const handleDeleteBlogById = (id: string) => {
           </el-select>
         </template>
         <template #append>
-          <el-button :icon="Search"/>
+          <el-button :onclick="handleQuery" :icon="Search"/>
         </template>
       </el-input>
     </el-col>
@@ -216,12 +216,12 @@ const handleDeleteBlogById = (id: string) => {
         </el-link>
       </template>
     </el-table-column>
-    <el-table-column label="创建时间" width="170">
+    <el-table-column label="创建时间" width="200">
       <template #default="scope">
         {{ scope.row.createTime ? moment(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}
       </template>
     </el-table-column>
-    <el-table-column label="最近更新" width="170">
+    <el-table-column label="最近更新" width="200">
       <template #default="scope">
         {{ scope.row.updateTime ? moment(scope.row.updateTime).format('YYYY-MM-DD HH:mm:ss') : '' }}
       </template>
@@ -238,9 +238,9 @@ const handleDeleteBlogById = (id: string) => {
   <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="queryInfo.pageNum"
+      :current-page="queryInfo.current"
       :page-sizes="[10, 20, 30, 50]"
-      :page-size="queryInfo.pageSize"
+      :page-size="queryInfo.size"
       :total="total"
       layout="total, sizes, prev, pager, next, jumper"
       background

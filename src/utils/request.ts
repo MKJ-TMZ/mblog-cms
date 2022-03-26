@@ -11,7 +11,6 @@ const request = axios.create({
 
 // 请求拦截
 request.interceptors.request.use((config: any) => {
-    console.log(window.location.pathname !== '/login')
     if (window.location.pathname !== '/login') {
       const token = window.localStorage.getItem('token') || ''
       if (isNotEmpty(token)) {
