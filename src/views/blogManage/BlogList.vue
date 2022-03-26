@@ -58,9 +58,16 @@ const getCategoryList = () => {
 }
 
 const getBlogList = () => {
-  const data = getBlogListData(queryInfo)
-  blogList.value = data.blogList
-  total.value = data.total
+  getBlogListData(queryInfo).then((res: any) => {
+    if (res.code === 200) {
+      const {data} = res
+      blogList.value = data.records
+      total.value = data.total
+    }
+  }).catch((error: any) => {
+    msgError('获取分页信息失败')
+    console.log(error.msg)
+  })
 }
 
 const handleQuery = () => {
@@ -140,13 +147,13 @@ const toBlogEditPage = (id: string) => {
 
 const handleDeleteBlogById = (id: string) => {
   ElMessageBox.confirm(
-    `此操作将永久删除该博客<strong style="color: red">及其所有评论</strong>，是否删除?<br>建议将博客置为<strong style="color: red">私密</strong>状态！`,
-    '提示',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      dangerouslyUseHTMLString: true
-    }
+      `此操作将永久删除该博客<strong style="color: red">及其所有评论</strong>，是否删除?<br>建议将博客置为<strong style="color: red">私密</strong>状态！`,
+      '提示',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        dangerouslyUseHTMLString: true
+      }
   ).then(() => {
     deleteBlogById(id)
     getBlogList()
@@ -189,7 +196,7 @@ const handleDeleteBlogById = (id: string) => {
   </el-row>
 
   <el-table class="m-table" size="large" :data="blogList">
-    <el-table-column type="index" width="50" />
+    <el-table-column type="index" width="50"/>
     <el-table-column label="标题" prop="title" show-overflow-tooltip/>
     <el-table-column label="分类" prop="categoryName" width="150"/>
     <el-table-column label="置顶" width="80">
@@ -202,7 +209,7 @@ const handleDeleteBlogById = (id: string) => {
         <el-switch v-model="scope.row.isRecommend" @change="handleBlogRecommendSwitch(scope.row)"/>
       </template>
     </el-table-column>
-    <el-table-column label="可见性" width="100">
+    <el-table-column label="可见性" width="120">
       <template #default="scope">
         <el-link :icon="EditPen" :underline="false" @click="HandleBlogVisibilityClick(scope.row)">
           {{ scope.row.isPublished ? (isNotEmpty(scope.row.password) ? '密码保护' : '公开') : '私密' }}
@@ -210,10 +217,14 @@ const handleDeleteBlogById = (id: string) => {
       </template>
     </el-table-column>
     <el-table-column label="创建时间" width="170">
-      <template #default="scope">{{ moment(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') }}</template>
+      <template #default="scope">
+        {{ scope.row.createTime ? moment(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}
+      </template>
     </el-table-column>
     <el-table-column label="最近更新" width="170">
-      <template #default="scope">{{ moment(scope.row.updateTime).format('YYYY-MM-DD HH:mm:ss') }}</template>
+      <template #default="scope">
+        {{ scope.row.updateTime ? moment(scope.row.updateTime).format('YYYY-MM-DD HH:mm:ss') : '' }}
+      </template>
     </el-table-column>
     <el-table-column fixed="right" label="操作" width="200">
       <template #default="scope">

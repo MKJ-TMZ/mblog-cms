@@ -1,12 +1,5 @@
 import request from "@/utils/request";
 
-export function getCategoryAndTag() {
-  return {
-    "categories": ["test1", "tag"],
-    "tagList": ["tag1", "test",]
-  }
-}
-
 export function saveBlog(param: any) {
   return request({
     url: 'blog/save',
@@ -42,7 +35,7 @@ export function getBlogDataById(id: string) {
 }
 
 export function getBlogListData(queryInfo?: any) {
-  return {
+  /*return {
     "total": 3,
     "blogList": [
       {
@@ -139,7 +132,14 @@ export function getBlogListData(queryInfo?: any) {
     ],
     "navigateFirstPage": 1,
     "navigateLastPage": 1
-  }
+  }*/
+  return request({
+    url: 'blog/page',
+    method: 'GET',
+    data: {
+      ...queryInfo
+    }
+  })
 }
 
 export function updateBlogTop(id: string, top: boolean) {

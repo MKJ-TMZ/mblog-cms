@@ -6,7 +6,7 @@ import { isNotEmpty } from "@/utils/func";
 
 const request = axios.create({
   baseURL: 'http://localhost:8888/admin/',
-  timeout: 10000,
+  timeout: 30000,
 })
 
 // 请求拦截
