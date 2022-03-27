@@ -3,7 +3,7 @@ import { onBeforeMount, reactive, ref } from "vue";
 import {
   deleteBlogById,
   getBlogListData,
-  saveBlog,
+  saveBlog, updateBlog,
   updateBlogRecommend,
   updateBlogTop
 } from "@/api/blog";
@@ -30,11 +30,11 @@ const total = ref<number>(0)
 const dialogVisible = ref<boolean>(false)
 const blogId = ref<string>('')
 const radio = ref<string>('public')
-const appreciation = ref<boolean>(false)
-const recommend = ref<boolean>(false)
-const commentEnabled = ref<boolean>(false)
-const top = ref<boolean>(false)
-const published = ref<boolean>(false)
+const isAppreciation = ref<boolean>(false)
+const isRecommend = ref<boolean>(false)
+const isCommentEnabled = ref<boolean>(false)
+const isTop = ref<boolean>(false)
+const isPublished = ref<boolean>(false)
 const password = ref<string>('')
 
 onBeforeMount(() => {
@@ -75,24 +75,38 @@ const handleQuery = () => {
 }
 
 const handleBlogTopSwitch = (row: any) => {
-  updateBlogTop(row.id, row.top)
-  row.top ? msgSuccess('置顶成功') : msgSuccess('取消置顶成功')
+  const {id, isTop} = row
+  updateBlog({id, isTop}).then((res: any) => {
+    if (res.code == 200) {
+      isTop ? msgSuccess('置顶成功') : msgSuccess('取消置顶成功')
+    }
+  }).catch((error: any) => {
+    msgError('更新失败')
+    console.log(error.msg)
+  })
 }
 
 const handleBlogRecommendSwitch = (row: any) => {
-  updateBlogRecommend(row.id, row.recommend)
-  row.recommend ? msgSuccess('推荐成功') : msgSuccess('取消推荐成功')
+  const {id, isRecommend} = row
+  updateBlog({id, isRecommend}).then((res: any) => {
+    if (res.code == 200) {
+      isRecommend ? msgSuccess('推荐成功') : msgSuccess('取消推荐成功')
+    }
+  }).catch((error: any) => {
+    msgError('更新失败')
+    console.log(error.msg)
+  })
 }
 
 const HandleBlogVisibilityClick = (row: any) => {
-  appreciation.value = row.appreciation
-  recommend.value = row.recommend
-  commentEnabled.value = row.commentEnabled
-  top.value = row.top
-  published.value = row.published
+  isAppreciation.value = row.isAppreciation
+  isRecommend.value = row.isRecommend
+  isCommentEnabled.value = row.isCommentEnabled
+  isTop.value = row.isTop
+  isPublished.value = row.isPublished
   password.value = row.password
   blogId.value = row.id
-  radio.value = published.value ? (isNotEmpty(password.value) ? 'password' : 'public') : 'private'
+  radio.value = isPublished.value ? (isNotEmpty(password.value) ? 'password' : 'public') : 'private'
   dialogVisible.value = true
 }
 
@@ -107,26 +121,33 @@ const handleVisibilitySubmit = () => {
   }
 
   if (radio.value === 'private') {
-    appreciation.value = false
-    recommend.value = false
-    commentEnabled.value = false
-    top.value = false
-    published.value = false
+    isAppreciation.value = false
+    isRecommend.value = false
+    isCommentEnabled.value = false
+    isTop.value = false
+    isPublished.value = false
   } else {
-    published.value = true
+    isPublished.value = true
   }
 
   const param = {
     id: blogId.value,
-    appreciation: appreciation.value,
-    recommend: recommend.value,
-    commentEnabled: commentEnabled.value,
-    top: top.value,
-    published: published.value,
+    isAppreciation: isAppreciation.value,
+    isRecommend: isRecommend.value,
+    isCommentEnabled: isCommentEnabled.value,
+    isTop: isTop.value,
+    isPublished: isPublished.value,
     password: password.value
   }
 
-  saveBlog(param)
+  updateBlog(param).then((res: any) => {
+    if (res.code === 200) {
+      msgSuccess("更新成功")
+    }
+  }).catch((error: any) => {
+    msgError('更新失败')
+    console.log(error.msg)
+  })
   getBlogList()
   dialogVisible.value = false
 }
@@ -155,9 +176,15 @@ const handleDeleteBlogById = (id: string) => {
         dangerouslyUseHTMLString: true
       }
   ).then(() => {
-    deleteBlogById(id)
-    getBlogList()
-    msgSuccess('刪除成功')
+    deleteBlogById(id).then((res: any) => {
+      if (res.code == 200) {
+        msgSuccess('刪除成功')
+        getBlogList()
+      }
+    }).catch((error: any) => {
+      msgError('删除失败')
+      console.log(error.msg)
+    })
   }).catch(() => {
     message('已取消')
   })
@@ -264,16 +291,16 @@ const handleDeleteBlogById = (id: string) => {
       <el-form-item v-if="radio !== 'private'">
         <el-row class="m-width-full">
           <el-col :span="6">
-            <el-switch v-model="appreciation" active-text="赞赏"></el-switch>
+            <el-switch v-model="isAppreciation" active-text="赞赏"></el-switch>
           </el-col>
           <el-col :span="6">
-            <el-switch v-model="recommend" active-text="推荐"></el-switch>
+            <el-switch v-model="isRecommend" active-text="推荐"></el-switch>
           </el-col>
           <el-col :span="6">
-            <el-switch v-model="commentEnabled" active-text="评论"></el-switch>
+            <el-switch v-model="isCommentEnabled" active-text="评论"></el-switch>
           </el-col>
           <el-col :span="6">
-            <el-switch v-model="top" active-text="置顶"></el-switch>
+            <el-switch v-model="isTop" active-text="置顶"></el-switch>
           </el-col>
         </el-row>
       </el-form-item>

@@ -52,8 +52,6 @@ const handleLogin = () => {
           const siteInfo = getSiteInfo()
           store.commit(SAVE_WEB_TITLE_SUFFIX, siteInfo.webTitleSuffix)
           router.push('/home')
-        } else {
-          msgError(res.msg)
         }
       }).catch((error: any) => {
         msgError('登录失败')

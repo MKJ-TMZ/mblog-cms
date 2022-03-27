@@ -13,7 +13,11 @@ export function saveBlog(param: any) {
 }
 
 export function getBlogDataById(id: string) {
-  return {
+  return request({
+    url: `blog/detail/${id}`,
+    method: 'GET'
+  })
+  /*return {
     "id": '1506228558979260419',
     "title": "123",
     "coverPic": "https://w.wallhaven.cc/full/mp/wallhaven-mpdr29.jpg",
@@ -33,7 +37,7 @@ export function getBlogDataById(id: string) {
     "user": null,
     "category": "test1",
     "tagList": ["tag1"]
-  }
+  }*/
 }
 
 export function getBlogListData(queryInfo?: any) {
@@ -42,6 +46,16 @@ export function getBlogListData(queryInfo?: any) {
     method: 'GET',
     data: {
       ...queryInfo
+    }
+  })
+}
+
+export function updateBlog(param: any) {
+  return request({
+    url: 'blog/update',
+    method: 'POST',
+    data: {
+      ...param
     }
   })
 }
@@ -55,5 +69,8 @@ export function updateBlogRecommend(id: string, recommend: boolean) {
 }
 
 export function deleteBlogById(id: string) {
-  console.log(id)
+  return request({
+    url: `blog/delete/${id}`,
+    method: 'DELETE'
+  })
 }

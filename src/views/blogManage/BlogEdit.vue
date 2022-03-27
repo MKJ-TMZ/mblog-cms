@@ -24,7 +24,7 @@ const form = reactive<any>({
   content: '',
   categoryName: '',
   tagNameSet: [],
-  wordCounts: 0,
+  wordsCount: 0,
   readTime: 0,
   viewCounts: 0,
   isAppreciation: false,
@@ -41,7 +41,7 @@ const formRules = {
   coverPic: [{required: true, message: '请输入首图链接', trigger: 'change'}],
   categoryName: [{required: true, message: '请选择分类', trigger: 'change'}],
   tagNameSet: [{required: true, message: '请选择标签', trigger: 'change'}],
-  wordCounts: [{required: true, message: '请输入文章字数', trigger: 'change'}],
+  wordsCount: [{required: true, message: '请输入文章字数', trigger: 'change'}],
   description: [{required: true, message: '请输入文章描述', trigger: 'change'}],
   content: [{required: true, message: '请输入文章正文', trigger: 'change'}]
 }
@@ -81,7 +81,7 @@ const getCategoryList = () => {
 }
 
 const handleWordCountsChange = () => {
-  form.readTime = form.wordCounts ? Math.round(form.wordCounts / 200) : 0
+  form.readTime = form.wordsCount ? Math.round(form.wordsCount / 200) : 0
 }
 
 const handleFormSubmit = (isDraft: boolean) => {
@@ -127,24 +127,31 @@ const handleDialogSubmit = () => {
 }
 
 const getBlogById = () => {
-  const data = getBlogDataById(route.params.id as string)
-  form.id = data.id
-  form.title = data.title
-  form.coverPic = data.coverPic
-  form.description = data.description
-  form.content = data.content
-  form.categoryName = data.category
-  form.tagNameSet = data.tagList
-  form.wordCounts = data.wordCounts
-  form.readTime = data.readTime
-  form.viewCounts = data.viewCounts
-  form.isAppreciation = data.isAppreciation
-  form.isRecommend = data.isRecommend
-  form.isCommentEnabled = data.isCommentEnabled
-  form.isTop = data.isTop
-  form.isPublished = data.isPublished
-  form.password = data.password
-  radio.value = form.isPublished ? (isNotEmpty(form.password) ? 'password' : 'public') : 'private'
+  getBlogDataById(route.params.id as string).then((res: any) => {
+    if (res.code === 200) {
+      form.id = res.data.id
+      form.title = res.data.title
+      form.coverPic = res.data.coverPic
+      form.description = res.data.description
+      form.content = res.data.content
+      form.categoryName = res.data.categoryName
+      form.tagNameSet = res.data.tagNameSet
+      form.wordsCount = res.data.wordsCount
+      form.readTime = res.data.readTime
+      form.viewCounts = res.data.viewCounts
+      form.isAppreciation = res.data.isAppreciation
+      form.isRecommend = res.data.isRecommend
+      form.isCommentEnabled = res.data.isCommentEnabled
+      form.isTop = res.data.isTop
+      form.isPublished = res.data.isPublished
+      form.password = res.data.password
+      radio.value = form.isPublished ? (isNotEmpty(form.password) ? 'password' : 'public') : 'private'
+    }
+  }).catch((error: any) => {
+    msgError('获取详情失败')
+    console.log(error.msg)
+  })
+
 }
 
 const handleSaveBlog = () => {
@@ -219,12 +226,12 @@ const handleSaveBlog = () => {
         </el-form-item>
       </el-col>
       <el-col :span="6">
-        <el-form-item label="字数（自动计算阅读时长）" prop="wordCounts">
+        <el-form-item label="字数（自动计算阅读时长）" prop="wordsCount">
           <el-input-number
               class="m-width-full"
               placeholder="请输入文章字数（自动计算阅读时长）"
               controls-position="right"
-              v-model="form.wordCounts"
+              v-model="form.wordsCount"
               :onChange="handleWordCountsChange"
               :min="0"
           />

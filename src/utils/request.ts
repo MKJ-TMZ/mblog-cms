@@ -3,6 +3,7 @@ import axios from "axios";
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import { isNotEmpty } from "@/utils/func";
+import { msgError } from "@/utils/message";
 
 const request = axios.create({
   baseURL: 'http://localhost:8888/admin/',
@@ -28,6 +29,9 @@ request.interceptors.request.use((config: any) => {
 request.interceptors.response.use(
   (res: any) => {
     NProgress.done()
+    if (res.data.code !== 200 && isNotEmpty(res.data.msg)) {
+      msgError(res.data.msg)
+    }
     return res.data
   }
 )
