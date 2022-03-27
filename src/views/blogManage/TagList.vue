@@ -12,6 +12,7 @@ const queryInfo = reactive<any>({
 })
 const tagList = ref<any[]>([])
 const total = ref<number>(0)
+const dialogTitle = ref<string>('')
 const dialogVisible = ref<boolean>(false)
 const dialogForm = reactive<any>({
   id: '',
@@ -44,27 +45,65 @@ onBeforeMount(() => {
 })
 
 const init = () => {
-  getTagList()
+  getTagPage()
 }
 
-const getTagList = () => {
-  const data = getTagPageData(queryInfo)
-  tagList.value = data.list
-  total.value = data.total
+const getTagPage = () => {
+  getTagPageData(queryInfo).then((res: any) => {
+    if (res.code === 200) {
+      const { data } = res
+      tagList.value = data.records
+      total.value = data.total
+    }
+  }).catch((error: any) => {
+    msgError('获取分页信息失败')
+    console.log(error.msg)
+  })
 }
 
+const getColorName = (color: string) => {
+  switch (color) {
+    case 'red':
+      return '红色';
+    case 'orange':
+      return '橘黄';
+    case 'yellow':
+      return '黄色';
+    case 'olive':
+      return '橄榄绿';
+    case 'green':
+      return '纯绿';
+    case 'teal':
+      return '水鸭蓝';
+    case 'blue':
+      return '纯蓝';
+    case 'violet':
+      return '紫罗兰';
+    case 'purple':
+      return '紫色';
+    case 'pink':
+      return '粉红';
+    case 'brown':
+      return '棕色';
+    case 'grey':
+      return '灰色';
+    case 'black':
+      return '黑色';
+  }
+}
 
 const handleSizeChange = (newSize: number) => {
   queryInfo.pageSize = newSize
-  getTagList()
+  getTagPage()
 }
 
 const handleCurrentChange = (newPage: number) => {
   queryInfo.pageNum = newPage
-  getTagList()
+  getTagPage()
 }
 
 const handleDialogClosed = () => {
+  dialogTitle.value = ''
   dialogForm['id'] = ''
   dialogForm['name'] = ''
   dialogForm['color'] = ''
@@ -76,8 +115,16 @@ const HandleSaveTag = () => {
   }
   formRef.value.validate((valid: any) => {
     if (valid) {
-      saveTag(dialogForm)
-      dialogVisible.value = false
+      saveTag(dialogForm).then((res: any) => {
+        if (res.code == 200) {
+          msgSuccess("提交成功")
+          getTagPage()
+          dialogVisible.value = false
+        }
+      }).catch((error: any) => {
+        msgError('提交失败')
+        console.log(error.msg)
+      })
     } else {
       msgError('请填写必要的表单项')
       return;
@@ -86,6 +133,7 @@ const HandleSaveTag = () => {
 }
 
 const handleEditClick = (row: any) => {
+  dialogTitle.value = '编辑标签'
   dialogForm.id = row['id']
   dialogForm.name = row['name']
   dialogForm.color = row['color']
@@ -102,9 +150,15 @@ const handleDeleteTagById = (id: string) => {
         dangerouslyUseHTMLString: true
       }
   ).then(() => {
-    deleteTagById(id)
-    getTagList()
-    msgSuccess('刪除成功')
+    deleteTagById(id).then((res: any) => {
+      if (res.code === 200) {
+        getTagPage()
+        msgSuccess('刪除成功')
+      }
+    }).catch((error: any) => {
+      msgError('删除失败')
+      console.log(error.msg)
+    })
   }).catch(() => {
     message('已取消')
   })
@@ -127,7 +181,7 @@ const handleDeleteTagById = (id: string) => {
     <el-table-column label="名称" prop="name"  show-overflow-tooltip/>
     <el-table-column label="颜色">
       <template #default="scope">
-        <span style="float: left; width: 100px;">{{ scope.row.color }}</span>
+        <span style="float: left; width: 100px;">{{ getColorName(scope.row.color) }}</span>
         <span style="float: left; width: 100px; height: 23px" :class="`me-${scope.row.color}`"></span>
       </template>
     </el-table-column>
@@ -152,7 +206,7 @@ const handleDeleteTagById = (id: string) => {
   />
 
   <!--对话框-->
-  <el-dialog title="添加标签" width="50%" v-model="dialogVisible" @close="handleDialogClosed">
+  <el-dialog :title="dialogTitle ? dialogTitle : '添加标签'" width="50%" v-model="dialogVisible" @close="handleDialogClosed">
     <!--内容主体-->
     <el-form size="large" :model="dialogForm" ref="formRef" :rules="formRules" label-width="80px">
       <el-form-item label="标签名称" prop="name">
