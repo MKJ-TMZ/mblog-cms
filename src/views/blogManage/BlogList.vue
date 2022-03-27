@@ -1,12 +1,6 @@
 <script lang="ts" setup>
 import { onBeforeMount, reactive, ref } from "vue";
-import {
-  deleteBlogById,
-  getBlogListData,
-  saveBlog, updateBlog,
-  updateBlogRecommend,
-  updateBlogTop
-} from "@/api/blog";
+import { deleteBlogById, getBlogPageData, updateBlog } from "@/api/blog";
 import { message, msgError, msgSuccess } from "@/utils/message";
 import { isEmpty, isNotEmpty } from "@/utils/func";
 import { useRouter } from "vue-router";
@@ -43,7 +37,7 @@ onBeforeMount(() => {
 
 const init = () => {
   getCategoryList()
-  getBlogList()
+  getBlogPage()
 }
 
 const getCategoryList = () => {
@@ -57,10 +51,10 @@ const getCategoryList = () => {
   })
 }
 
-const getBlogList = () => {
-  getBlogListData(queryInfo).then((res: any) => {
+const getBlogPage = () => {
+  getBlogPageData(queryInfo).then((res: any) => {
     if (res.code === 200) {
-      const {data} = res
+      const { data } = res
       blogList.value = data.records
       total.value = data.total
     }
@@ -71,7 +65,7 @@ const getBlogList = () => {
 }
 
 const handleQuery = () => {
-  getBlogList()
+  getBlogPage()
 }
 
 const handleBlogTopSwitch = (row: any) => {
@@ -148,18 +142,18 @@ const handleVisibilitySubmit = () => {
     msgError('更新失败')
     console.log(error.msg)
   })
-  getBlogList()
+  getBlogPage()
   dialogVisible.value = false
 }
 
 const handleSizeChange = (newSize: number) => {
   queryInfo.size = newSize
-  getBlogList()
+  getBlogPage()
 }
 
 const handleCurrentChange = (newPage: number) => {
   queryInfo.current = newPage
-  getBlogList()
+  getBlogPage()
 }
 
 const toBlogEditPage = (id: string) => {
@@ -179,7 +173,7 @@ const handleDeleteBlogById = (id: string) => {
     deleteBlogById(id).then((res: any) => {
       if (res.code == 200) {
         msgSuccess('刪除成功')
-        getBlogList()
+        getBlogPage()
       }
     }).catch((error: any) => {
       msgError('删除失败')

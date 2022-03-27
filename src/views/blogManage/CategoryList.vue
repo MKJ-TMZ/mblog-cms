@@ -12,6 +12,7 @@ const queryInfo = reactive<any>({
 })
 const categoryList = ref<any[]>([])
 const total = ref<number>(0)
+const dialogTitle = ref<string>('')
 const dialogVisible = ref<boolean>(false)
 const dialogForm = reactive<any>({
   id: '',
@@ -27,26 +28,34 @@ onBeforeMount(() => {
 })
 
 const init = () => {
-  getCategoryList()
+  getCategoryPage()
 }
 
-const getCategoryList = () => {
-  const data = getCategoryPageData(queryInfo)
-  categoryList.value = data.list;
-  total.value = data.total
+const getCategoryPage = () => {
+  getCategoryPageData(queryInfo).then((res: any) => {
+    if (res.code === 200) {
+      const { data } = res
+      categoryList.value = data.records
+      total.value = data.total
+    }
+  }).catch((error: any) => {
+    msgError('获取分页信息失败')
+    console.log(error.msg)
+  })
 }
 
 const handleSizeChange = (newSize: number) => {
   queryInfo.pageSize = newSize
-  getCategoryList()
+  getCategoryPage()
 }
 
 const handleCurrentChange = (newPage: number) => {
   queryInfo.pageNum = newPage
-  getCategoryList()
+  getCategoryPage()
 }
 
 const handleDialogClosed = () => {
+  dialogTitle.value = ''
   dialogForm['id'] = ''
   dialogForm['name'] = ''
 }
@@ -57,8 +66,16 @@ const HandleSaveCategory = () => {
   }
   formRef.value.validate((valid: any) => {
     if (valid) {
-      saveCategory(dialogForm)
-      dialogVisible.value = false
+      saveCategory(dialogForm).then((res: any) => {
+        if (res.code == 200) {
+          msgSuccess("提交成功")
+          getCategoryPage()
+          dialogVisible.value = false
+        }
+      }).catch((error: any) => {
+        msgError('提交失败')
+        console.log(error.msg)
+      })
     } else {
       msgError('请填写必要的表单项')
       return;
@@ -67,6 +84,7 @@ const HandleSaveCategory = () => {
 }
 
 const handleEditClick = (row: any) => {
+  dialogTitle.value = '编辑分类'
   dialogForm.id = row['id']
   dialogForm.name = row['name']
   dialogVisible.value = true
@@ -82,9 +100,15 @@ const handleDeleteCategoryById = (id: string) => {
         dangerouslyUseHTMLString: true
       }
   ).then(() => {
-    deleteCategoryById(id)
-    getCategoryList()
-    msgSuccess('刪除成功')
+    deleteCategoryById(id).then((res: any) => {
+      if (res.code === 200) {
+        getCategoryPage()
+        msgSuccess('刪除成功')
+      }
+    }).catch((error: any) => {
+      msgError('删除失败')
+      console.log(error.msg)
+    })
   }).catch(() => {
     message('已取消')
   })
@@ -128,7 +152,7 @@ const handleDeleteCategoryById = (id: string) => {
   />
 
   <!--对话框-->
-  <el-dialog title="添加分类" width="50%" v-model="dialogVisible" @close="handleDialogClosed">
+  <el-dialog :title="dialogTitle ? dialogTitle : '添加分类'" width="50%" v-model="dialogVisible" @close="handleDialogClosed">
     <!--内容主体-->
     <el-form size="large" :model="dialogForm" ref="formRef" :rules="formRules" label-width="80px">
       <el-form-item label="分类名称" prop="name">
