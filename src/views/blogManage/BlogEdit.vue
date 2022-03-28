@@ -129,22 +129,23 @@ const handleDialogSubmit = () => {
 const getBlogById = () => {
   getBlogDataById(route.params.id as string).then((res: any) => {
     if (res.code === 200) {
-      form.id = res.data.id
-      form.title = res.data.title
-      form.coverPic = res.data.coverPic
-      form.description = res.data.description
-      form.content = res.data.content
-      form.categoryName = res.data.categoryName
-      form.tagNameSet = res.data.tagNameSet
-      form.wordsCount = res.data.wordsCount
-      form.readTime = res.data.readTime
-      form.viewCounts = res.data.viewCounts
-      form.isAppreciation = res.data.isAppreciation
-      form.isRecommend = res.data.isRecommend
-      form.isCommentEnabled = res.data.isCommentEnabled
-      form.isTop = res.data.isTop
-      form.isPublished = res.data.isPublished
-      form.password = res.data.password
+      const { data } = res
+      form.id = data.id
+      form.title = data.title
+      form.coverPic = data.coverPic
+      form.description = data.description
+      form.content = data.content
+      form.categoryName = data.categoryName
+      form.tagNameSet = data.tagNameSet
+      form.wordsCount = data.wordsCount
+      form.readTime = data.readTime
+      form.viewCounts = data.viewCounts
+      form.isAppreciation = data.isAppreciation
+      form.isRecommend = data.isRecommend
+      form.isCommentEnabled = data.isCommentEnabled
+      form.isTop = data.isTop
+      form.isPublished = data.isPublished
+      form.password = data.password
       radio.value = form.isPublished ? (isNotEmpty(form.password) ? 'password' : 'public') : 'private'
     }
   }).catch((error: any) => {

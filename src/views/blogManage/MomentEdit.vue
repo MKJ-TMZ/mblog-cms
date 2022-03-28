@@ -11,8 +11,8 @@ const route = useRoute()
 const form = reactive<any>({
   content: '',
   createTime: null,
-  likes: 0,
-  published: false
+  likeCount: 0,
+  isPublished: false
 })
 const formRef = ref<any>()
 const formRules = {
@@ -25,14 +25,14 @@ onBeforeMount(() => {
   }
 })
 
-const handleSubmit = (published: boolean) => {
-  form.published = published
-  if (published) {
+const handleSubmit = (isPublished: boolean) => {
+  if (isPublished) {
     if (!formRef.value) {
       return;
     }
     formRef.value.validate((valid: any) => {
       if (valid) {
+        form.isPublished = true
         handleSaveMoment()
       } else {
         msgError('请填写必要的表单项')
@@ -45,17 +45,30 @@ const handleSubmit = (published: boolean) => {
 }
 
 const getMomentById = (id: string) => {
-  const data = getMomentDataById(id)
-  form.content = data.content
-  form.createTime = data.createTime
-  form.likes = data.likes
-  form.published = data.published
+  getMomentDataById(id).then((res: any) => {
+    if (res.code === 200) {
+      const { data } = res
+      form.content = data.content
+      form.createTime = data.createTime
+      form.likeCount = data.likeCount
+      form.isPublished = data.isPublished
+    }
+  }).catch((error: any) => {
+    msgError('获取详情失败')
+    console.log(error.msg)
+  })
 }
 
 const handleSaveMoment = () => {
-  saveMoment(form)
-  msgSuccess('发布成功')
-  router.push('/blogManage/moment/list')
+  saveMoment(form).then((res: any) => {
+    if (res.code === 200) {
+      msgSuccess('发布成功')
+      router.push('/blogManage/moment/list')
+    }
+  }).catch((error: any) => {
+    msgError('保存失败')
+    console.log(error.msg)
+  })
 }
 </script>
 

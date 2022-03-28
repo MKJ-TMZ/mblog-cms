@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import Breadcrumb from "@/components/Breadcrumb.vue";
 import { onBeforeMount, reactive, ref } from "vue";
-import { deleteMomentById, getMomentListData, updateMomentPublished } from "@/api/moment";
-import { message, msgSuccess } from "@/utils/message";
+import { deleteMomentById, getMomentPageData, updateMomentPublished } from "@/api/moment";
+import { message, msgError, msgSuccess } from "@/utils/message";
 import { useRouter } from "vue-router";
 import { ElMessageBox } from "element-plus";
 import * as moment from 'moment'
@@ -11,8 +11,8 @@ import { Edit, Delete } from "@element-plus/icons-vue";
 const router = useRouter()
 
 const queryInfo = reactive<any>({
-  pageNum: 1,
-  pageSize: 10
+  current: 1,
+  size: 10
 })
 const momentList = ref<any[]>([])
 const total = ref<number>(0)
@@ -26,24 +26,38 @@ const init = () => {
 }
 
 const getMomentList = () => {
-  const data = getMomentListData(queryInfo);
-  momentList.value = data.momentList;
-  total.value = data.total
+  getMomentPageData(queryInfo).then((res: any) => {
+    if (res.code === 200) {
+      const { data } = res
+      momentList.value = data.records;
+      total.value = data.total
+    }
+  }).catch((error: any) => {
+    msgError('获取分页信息失败')
+    console.log(error.msg)
+  })
 }
 
 const handleSizeChange = (newSize: number) => {
-  queryInfo.pageSize = newSize
+  queryInfo.size = newSize
   getMomentList()
 }
 
 const handleCurrentChange = (newPage: number) => {
-  queryInfo.pageNum = newPage
+  queryInfo.current = newPage
   getMomentList()
 }
 
 const handleMomentPublishedSwitch = (row: any) => {
-  updateMomentPublished(row.id, row.published)
-  row.published ? msgSuccess('发布成功') : msgSuccess('取消发布成功')
+  const { id, isPublished } = row
+  updateMomentPublished({ id, isPublished }).then((res: any) => {
+    if (res.code === 200) {
+      isPublished ? msgSuccess('发布成功') : msgSuccess('取消发布成功')
+    }
+  }).catch((error: any) => {
+    msgError('更新失败')
+    console.log(error.msg)
+  })
 }
 
 const toMomentEditPage = (id: string) => {
@@ -60,9 +74,15 @@ const handleDeleteMomentById = (id: string) => {
         dangerouslyUseHTMLString: true
       }
   ).then(() => {
-    deleteMomentById(id)
-    getMomentList()
-    msgSuccess('刪除成功')
+    deleteMomentById(id).then((res: any) => {
+      if (res.code === 200) {
+        getMomentList()
+        msgSuccess('刪除成功')
+      }
+    }).catch((error: any) => {
+      msgError('删除失败')
+      console.log(error.msg)
+    })
   }).catch(() => {
     message('已取消')
   })
@@ -78,17 +98,18 @@ const handleDeleteMomentById = (id: string) => {
     <el-table-column label="内容" prop="content" show-overflow-tooltip/>
     <el-table-column label="发布状态" width="80">
       <template #default="scope">
-        <el-switch v-model="scope.row.published" @change="handleMomentPublishedSwitch(scope.row)"/>
+        <el-switch v-model="scope.row.isPublished" @change="handleMomentPublishedSwitch(scope.row)"/>
       </template>
     </el-table-column>
-    <el-table-column label="点赞数" prop="likes" width="80"/>
+    <el-table-column label="点赞数" prop="likeCount" width="80"/>
     <el-table-column label="创建时间" width="170">
       <template #default="scope">{{ moment(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') }}</template>
     </el-table-column>
     <el-table-column fixed="right" label="操作" width="200">
       <template #default="scope">
         <el-button type="primary" size="small" :icon="Edit" @click="toMomentEditPage(scope.row.id)">编辑</el-button>
-        <el-button type="danger" size="small" :icon="Delete" @click="handleDeleteMomentById(scope.row.id)">删除</el-button>
+        <el-button type="danger" size="small" :icon="Delete" @click="handleDeleteMomentById(scope.row.id)">删除
+        </el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -97,9 +118,9 @@ const handleDeleteMomentById = (id: string) => {
   <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="queryInfo.pageNum"
+      :current-page="queryInfo.current"
       :page-sizes="[10, 20, 30, 50]"
-      :page-size="queryInfo.pageSize"
+      :page-size="queryInfo.size"
       :total="total"
       layout="total, sizes, prev, pager, next, jumper"
       background
