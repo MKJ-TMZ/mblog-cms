@@ -3,9 +3,9 @@ import { onBeforeMount, reactive, ref } from "vue";
 import {
   deleteFriendById,
   getFriendInfoData,
-  getFriendListData,
+  getFriendPageData,
   saveFriend,
-  saveFriendContent,
+  saveFriendSave,
   updatePublished
 } from "@/api/friend";
 import { ElMessageBox } from "element-plus";
@@ -15,15 +15,17 @@ import { Delete, Edit, Plus } from "@element-plus/icons-vue";
 import * as moment from 'moment'
 
 const infoForm = reactive<any>({
+  id: '',
   content: '',
-  commentEnabled: true,
+  isCommentEnabled: false,
 })
 const queryInfo = reactive<any>({
-  pageNum: 1,
-  pageSize: 10
+  current: 1,
+  size: 10
 })
 const friendList = ref<any[]>([])
 const total = ref<number>(0)
+const dialogTitle = ref<string>('')
 const dialogVisible = ref<boolean>(false)
 const dialogForm = reactive<any>({
   id: '',
@@ -31,7 +33,7 @@ const dialogForm = reactive<any>({
   description: '',
   website: '',
   avatar: '',
-  published: true
+  isPublished: true
 })
 const formRef = ref<any>()
 const formRules = {
@@ -51,38 +53,84 @@ const init = () => {
 }
 
 const getFriendList = () => {
-  const data = getFriendListData()
-  friendList.value = data.list
-  total.value = data.total
+  getFriendPageData().then((res: any) => {
+    if (res.code === 200) {
+      const { data } = res
+      friendList.value = data.records
+      total.value = data.total
+    }
+  }).catch((error: any) => {
+    msgError('获取分页信息失败')
+    console.log(error.msg)
+  })
 }
 
 const getFriendInfo = () => {
-  const data = getFriendInfoData()
-  infoForm.content = data.content
-  infoForm.commentEnabled = data.commentEnabled
+  getFriendInfoData().then((res: any) => {
+    if (res.code === 200) {
+      const { data } = res
+      infoForm.id = data.id || ''
+      infoForm.content = data.content || ''
+      infoForm.isCommentEnabled = data.isCommentEnabled || false
+    }
+  })
 }
 
 const handleSaveFriendContent = () => {
-  saveFriendContent(infoForm.content)
-  getFriendInfo()
+  const param = {
+    id: infoForm.id,
+    content: infoForm.content
+  }
+  saveFriendSave(param).then((res: any) => {
+    if (res.code === 200) {
+      getFriendInfo()
+      msgSuccess('保存成功')
+    }
+  }).catch((error: any) => {
+    msgError('保存失败')
+    console.log(error.msg)
+  })
 }
 
 const handleFriendCommentSwitch = () => {
-  saveFriendContent(infoForm.commentEnabled)
+  const param = {
+    id: infoForm.id,
+    isCommentEnabled: infoForm.isCommentEnabled
+  }
+  saveFriendSave(param).then((res: any) => {
+    if (res.code === 200) {
+      infoForm.isCommentEnabled ? msgSuccess('开启评论成功') : msgSuccess('关闭评论成功')
+    }
+  }).catch((error: any) => {
+    msgError('保存失败')
+    console.log(error.msg)
+  })
 }
 
 const handleSizeChange = (newSize: number) => {
-  queryInfo.pageSize = newSize
+  queryInfo.size = newSize
   getFriendList()
 }
 
 const handleCurrentChange = (newPage: number) => {
-  queryInfo.pageNum = newPage
+  queryInfo.current = newPage
   getFriendList()
 }
 
 const handleFriendPublishedSwitch = (row: any) => {
-  updatePublished(row.id, row.published)
+  const { id, isPublished } = row
+  const param = {
+    id,
+    isPublished
+  }
+  saveFriend(param).then((res: any) => {
+    if (res.code === 200) {
+      isPublished ? msgSuccess('公开成功') : msgSuccess('取消公开成功')
+    }
+  }).catch((error: any) => {
+    msgError('更新失败')
+    console.log(error.msg)
+  })
 }
 
 const handleDeleteFriendById = (id : string) => {
@@ -95,15 +143,22 @@ const handleDeleteFriendById = (id : string) => {
         dangerouslyUseHTMLString: true
       }
   ).then(() => {
-    deleteFriendById(id)
-    getFriendList()
-    msgSuccess('刪除成功')
+    deleteFriendById(id).then((res: any) => {
+      if (res.code === 200) {
+        getFriendList()
+        msgSuccess('刪除成功')
+      }
+    }).catch((error: any) => {
+      msgError('删除失败')
+      console.log(error.msg)
+    })
   }).catch(() => {
     message('已取消')
   })
 }
 
 const handleEditClick = (row: any) => {
+  dialogTitle.value = '编辑分类'
   dialogForm.id = row['id']
   dialogForm.nickname = row['nickname']
   dialogForm.description = row['description']
@@ -113,6 +168,7 @@ const handleEditClick = (row: any) => {
 }
 
 const handleDialogClosed = () => {
+  dialogTitle.value = ''
   dialogForm.id = ''
   dialogForm.nickname = ''
   dialogForm.description = ''
@@ -126,8 +182,16 @@ const HandleSaveFriend = () => {
   }
   formRef.value.validate((valid: any) => {
     if (valid) {
-      saveFriend(dialogForm)
-      dialogVisible.value = false
+      saveFriend(dialogForm).then((res: any) => {
+        if (res.code === 200) {
+          msgSuccess('保存成功')
+          getFriendList()
+          dialogVisible.value = false
+        }
+      }).catch((error: any) => {
+        msgError('保存失败')
+        console.log(error.msg)
+      })
     } else {
       msgError('请填写必要的表单项')
       return;
@@ -144,7 +208,7 @@ const HandleSaveFriend = () => {
   <el-row :gutter="10">
     <el-col :span="6">
       <el-button type="primary" :icon="Plus" @click="dialogVisible = true">添加友链</el-button>
-      <el-switch style="margin-left: 30px" v-model="infoForm.commentEnabled" active-text="页面评论" @change="handleFriendCommentSwitch"/>
+      <el-switch style="margin-left: 30px" v-model="infoForm.isCommentEnabled" active-text="页面评论" @change="handleFriendCommentSwitch"/>
     </el-col>
   </el-row>
 
@@ -157,13 +221,16 @@ const HandleSaveFriend = () => {
     </el-table-column>
     <el-table-column label="昵称" prop="nickname"  show-overflow-tooltip/>
     <el-table-column label="描述" prop="description"  show-overflow-tooltip/>
-    <el-table-column label="站点" prop="website"  show-overflow-tooltip/>
-    <el-table-column label="是否公开" width="100">
+    <el-table-column label="站点" show-overflow-tooltip>
       <template #default="scope">
-        <el-switch v-model="scope.row.published" @change="handleFriendPublishedSwitch(scope.row)"/>
+        <el-link type="primary" :href="scope.row.website" target="_blank">{{ scope.row.website }}</el-link>
       </template>
     </el-table-column>
-    <el-table-column label="浏览次数" prop="views" width="100"/>
+    <el-table-column label="是否公开" width="100">
+      <template #default="scope">
+        <el-switch v-model="scope.row.isPublished" @change="handleFriendPublishedSwitch(scope.row)"/>
+      </template>
+    </el-table-column>
     <el-table-column label="创建时间" width="170">
       <template #default="scope">{{ moment(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') }}</template>
     </el-table-column>
@@ -178,9 +245,9 @@ const HandleSaveFriend = () => {
   <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="queryInfo.pageNum"
+      :current-page="queryInfo.current"
       :page-sizes="[10, 20, 30, 50]"
-      :page-size="queryInfo.pageSize"
+      :page-size="queryInfo.size"
       :total="total"
       layout="total, sizes, prev, pager, next, jumper"
       background
@@ -198,7 +265,7 @@ const HandleSaveFriend = () => {
   </el-form>
 
   <!--对话框-->
-  <el-dialog title="添加友链" width="40%" v-model="dialogVisible" @close="handleDialogClosed">
+  <el-dialog :title="dialogTitle ? dialogTitle : '添加友链'" width="40%" v-model="dialogVisible" @close="handleDialogClosed">
     <!--内容主体-->
     <el-form size="large" :model="dialogForm" ref="formRef" :rules="formRules" label-width="80px">
       <el-form-item label="昵称" prop="nickname">
