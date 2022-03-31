@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import { onBeforeMount, reactive, ref } from "vue";
 import { getAboutDate, saveAbout } from "@/api/about";
-import { msgError } from "@/utils/message";
+import { msgError, msgSuccess } from "@/utils/message";
 import Breadcrumb from "@/components/Breadcrumb.vue";
 
 const form = reactive<any>({
+  id: '',
   title: '',
   content: '',
-  commentEnabled: true
+  isCommentEnabled: true
 })
 const formRef = ref<any>()
 const formRules = {
@@ -23,10 +24,18 @@ const init = () => {
 }
 
 const getAbout = () => {
-  const data = getAboutDate();
-  form.title = data.title
-  form.content = data.content
-  form.commentEnabled = data.commentEnabled
+  getAboutDate().then((res: any) => {
+    if (res.code === 200) {
+      const {data} = res
+      form.id = data.id
+      form.title = data.title
+      form.content = data.content
+      form.isCommentEnabled = data.isCommentEnabled
+    }
+  }).catch((error: any) => {
+    msgError('获取关于我信息失败')
+    console.log(error.msg)
+  })
 }
 
 const handleSubmit = () => {
@@ -35,7 +44,15 @@ const handleSubmit = () => {
   }
   formRef.value.validate((valid: any) => {
     if (valid) {
-      saveAbout(form)
+      saveAbout(form).then((res: any) => {
+        if (res.code === 200) {
+          msgSuccess('更新成功')
+          getAbout()
+        }
+      }).catch((error: any) => {
+        msgError('更新失败')
+        console.log(error.msg)
+      })
     } else {
       msgError('请填写必要的表单项')
       return;
@@ -64,7 +81,7 @@ const handleSubmit = () => {
       </el-col>
       <el-col :span="12">
         <el-form-item label="评论开关">
-          <el-switch v-model="form.commentEnabled"/>
+          <el-switch v-model="form.isCommentEnabled"/>
         </el-form-item>
       </el-col>
     </el-row>
