@@ -1,3 +1,7 @@
+import request from "@/utils/request";
+// @ts-ignore
+import qs from 'qs'
+
 export function getSiteInfo() {
   return {
     webTitleSuffix: "MTCode's Blog"
@@ -198,8 +202,61 @@ export function getSiteSettingData() {
 }
 
 export function saveBaseSetting(param: any) {
-  console.log(param)
-  JSON.stringify(param)
+  return request({
+    url: 'setting/base',
+    method: 'POST',
+    data: {
+      ...param
+    }
+  })
+}
+
+export function getBaseSettingData() {
+  return request({
+    url: 'setting/base',
+    method: 'GET'
+  })
+}
+
+export function saveProfileSetting(param: any) {
+  return request({
+    url: 'setting/profile',
+    method: 'POST',
+    data: {
+      ...param
+    }
+  })
+}
+
+export function getProfileSettingData() {
+  return request({
+    url: 'setting/profile',
+    method: 'GET'
+  })
+}
+
+export function getProfileCustomPageData(queryInfo?: any) {
+  return request({
+    url: `setting/profile/custom/page?${qs.stringify(queryInfo)}`,
+    method: 'GET'
+  })
+}
+
+export function saveProfilesCustom(param: any) {
+  return request({
+    url: 'setting/profile/custom',
+    method: 'POST',
+    data: {
+      ...param
+    }
+  })
+}
+
+export function deleteProfilesCustomById(id: string) {
+  return request({
+    url: `setting/profile/custom/${id}`,
+    method: 'DELETE'
+  })
 }
 
 export function saveProfilesSetting(param: any) {

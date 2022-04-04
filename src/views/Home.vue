@@ -131,6 +131,7 @@ const logout = () => {
   -webkit-box-shadow: inset 0 0 6px #48dbfb;
   box-shadow: inset 0 0 6px #48dbfb;
   background-color: #48dbfb;
+  border-radius: 10px;
 }
 
 .el-main::-webkit-scrollbar-track {

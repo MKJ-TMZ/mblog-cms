@@ -5,10 +5,7 @@ import qs from 'qs'
 export function getCategoryPageData(queryInfo?: any) {
   return request({
     url: `category/page?${qs.stringify(queryInfo)}`,
-    method: 'GET',
-    data: {
-      ...queryInfo
-    }
+    method: 'GET'
   })
 }
 

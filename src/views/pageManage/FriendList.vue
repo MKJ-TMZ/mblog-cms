@@ -5,8 +5,7 @@ import {
   getFriendInfoData,
   getFriendPageData,
   saveFriend,
-  saveFriendSave,
-  updatePublished
+  saveFriendSave
 } from "@/api/friend";
 import { ElMessageBox } from "element-plus";
 import { message, msgError, msgSuccess } from "@/utils/message";

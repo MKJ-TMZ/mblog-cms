@@ -88,7 +88,7 @@ const routes: any[] = [
       {
         path: '/pageManage/siteSettings',
         name: 'siteSettings',
-        component: () => import('@/views/pageManage/SiteSetting.vue'),
+        component: () => import('@/views/pageManage/SiteSetting/SiteSetting.vue'),
         meta: {
           title: '站点管理'
         }
