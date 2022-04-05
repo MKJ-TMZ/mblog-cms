@@ -9,8 +9,7 @@ import {
   saveProfilesCustom,
   saveProfileSetting
 } from "@/api/siteSetting";
-import { ElMessageBox } from "_element-plus@2.0.4@element-plus";
-import { deleteCategoryById } from "@/api/category";
+import { ElMessageBox } from "element-plus";
 
 const queryInfo = reactive<any>({
   pageNum: 1,
@@ -75,7 +74,7 @@ const handleSubmit = () => {
 const getProfileCustomPage = () => {
   getProfileCustomPageData(queryInfo).then((res: any) => {
     if (res.code === 200) {
-      const { data } = res
+      const {data} = res
       profileCustomList.value = data.records
       queryInfo.total = data.total
     }
@@ -87,10 +86,12 @@ const getProfileCustomPage = () => {
 
 const handleSizeChange = (newSize: number) => {
   queryInfo.pageSize = newSize
+  getProfileCustomPage()
 }
 
 const handleCurrentChange = (newPage: number) => {
   queryInfo.pageNum = newPage
+  getProfileCustomPage()
 }
 
 const handleDialogClosed = () => {
@@ -252,7 +253,8 @@ const handleDeleteProfileCustomById = (id: string) => {
   </el-card>
 
   <!--对话框-->
-  <el-dialog :title="dialogTitle ? dialogTitle : '添加自定义介绍'" width="50%" v-model="dialogVisible" @close="handleDialogClosed">
+  <el-dialog :title="dialogTitle ? dialogTitle : '添加自定义介绍'" width="50%" v-model="dialogVisible"
+             @close="handleDialogClosed">
     <!--内容主体-->
     <el-form size="large" :model="dialogForm" ref="formRef" :rules="formRules" label-width="80px">
       <el-form-item label="标题" prop="title">

@@ -259,20 +259,26 @@ export function deleteProfilesCustomById(id: string) {
   })
 }
 
-export function saveProfilesSetting(param: any) {
-  console.log(param)
-  JSON.stringify(param)
+export function getFooterSettingPageData(queryInfo?: any) {
+  return request({
+    url: `setting/footer/page?${qs.stringify(queryInfo)}`,
+    method: 'GET'
+  })
 }
 
 export function saveFooterSetting(param: any) {
-  console.log(param)
-  JSON.stringify(param)
+  return request({
+    url: 'setting/footer',
+    method: 'POST',
+    data: {
+      ...param
+    }
+  })
 }
 
-export function deleteBadge(id: string) {
-  console.log(id)
-}
-
-export function deleteProfiles(id: string) {
-  console.log(id)
+export function deleteFooterSettingById(id: string) {
+  return request({
+    url: `setting/footer/${id}`,
+    method: 'DELETE'
+  })
 }
