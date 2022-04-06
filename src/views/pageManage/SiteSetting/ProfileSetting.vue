@@ -23,7 +23,7 @@ const profileSetting = ref<any>({
   githubUrl: '',
   qqUrl: '',
   biliUrl: '',
-  neteaseUrl: '',
+  bangumiUrl: '',
   emailUrl: '',
 })
 const profileCustomList = ref<any[]>([])
@@ -202,7 +202,7 @@ const handleDeleteProfileCustomById = (id: string) => {
       <el-row :gutter="20">
         <el-col :sm="{span: 12}" :xs="{span: 24}">
           <el-form-item label="网易云音乐">
-            <el-input v-model="profileSetting.neteaseUrl"/>
+            <el-input v-model="profileSetting.bangumiUrl"/>
           </el-form-item>
         </el-col>
         <el-col :sm="{span: 12}" :xs="{span: 24}">
