@@ -8,6 +8,8 @@ import './assets/lib/icon/iconfont.css'
 // 引入mavonEditor富文本编辑器
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
+// prism代码高亮
+import '@/assets/lib/prism/prism.css';
 
 
 const app = createApp(App)

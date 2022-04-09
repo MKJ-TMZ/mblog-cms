@@ -201,7 +201,7 @@ const handleDeleteProfileCustomById = (id: string) => {
       </el-row>
       <el-row :gutter="20">
         <el-col :sm="{span: 12}" :xs="{span: 24}">
-          <el-form-item label="网易云音乐">
+          <el-form-item label="bangumi">
             <el-input v-model="profileSetting.bangumiUrl"/>
           </el-form-item>
         </el-col>
