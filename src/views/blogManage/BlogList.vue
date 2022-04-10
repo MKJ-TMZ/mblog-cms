@@ -73,6 +73,7 @@ const handleBlogTopSwitch = (row: any) => {
   updateBlog({id, isTop}).then((res: any) => {
     if (res.code == 200) {
       isTop ? msgSuccess('置顶成功') : msgSuccess('取消置顶成功')
+      getCategoryList()
     }
   }).catch((error: any) => {
     msgError('更新失败')
@@ -85,6 +86,7 @@ const handleBlogRecommendSwitch = (row: any) => {
   updateBlog({id, isRecommend}).then((res: any) => {
     if (res.code == 200) {
       isRecommend ? msgSuccess('推荐成功') : msgSuccess('取消推荐成功')
+      getCategoryList()
     }
   }).catch((error: any) => {
     msgError('更新失败')
@@ -137,6 +139,7 @@ const handleVisibilitySubmit = () => {
   updateBlog(param).then((res: any) => {
     if (res.code === 200) {
       msgSuccess("更新成功")
+      getCategoryList()
     }
   }).catch((error: any) => {
     msgError('更新失败')
