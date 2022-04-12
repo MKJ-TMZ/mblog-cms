@@ -9,6 +9,7 @@ const router = useRouter()
 const route = useRoute()
 
 const form = reactive<any>({
+  id: '',
   content: '',
   createTime: null,
   likeCount: 0,
@@ -49,6 +50,7 @@ const getMomentById = (id: string) => {
     if (res.code === 200) {
       const { data } = res
       form.content = data.content
+      form.id = data.id
       form.createTime = data.createTime
       form.likeCount = data.likeCount
       form.isPublished = data.isPublished
