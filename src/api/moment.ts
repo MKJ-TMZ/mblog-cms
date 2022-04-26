@@ -4,7 +4,7 @@ import qs from 'qs'
 
 export function saveMoment(param: any) {
   return request({
-    url: 'moment/save',
+    url: 'moment',
     method: 'POST',
     data: {
       ...param
@@ -14,7 +14,7 @@ export function saveMoment(param: any) {
 
 export function getMomentDataById(id: string) {
   return request({
-    url: `moment/detail/${id}`,
+    url: `moment/${id}`,
     method: 'GET'
   })
 }
@@ -31,8 +31,8 @@ export function getMomentPageData(queryInfo?: any) {
 
 export function updateMomentPublished(param: any) {
   return request({
-    url: 'moment/update',
-    method: 'POST',
+    url: 'moment',
+    method: 'PUT',
     data: {
       ...param
     }
@@ -41,7 +41,7 @@ export function updateMomentPublished(param: any) {
 
 export function deleteMomentById(id: string) {
   return request({
-    url: `moment/delete/${id}`,
+    url: `moment/${id}`,
     method: 'DELETE'
   })
 }

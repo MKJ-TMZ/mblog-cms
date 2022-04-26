@@ -9,14 +9,14 @@ export function getFriendPageData() {
 
 export function getFriendInfoData() {
   return request({
-    url: '/friends/info/detail',
+    url: '/friends/info',
     method: 'GET'
   })
 }
 
-export function saveFriendSave(param: any) {
+export function saveFriendInfo(param: any) {
   return request({
-    url: '/friends/info/save',
+    url: '/friends/info',
     method: 'POST',
     data: {
       ...param
@@ -26,14 +26,14 @@ export function saveFriendSave(param: any) {
 
 export function deleteFriendById(id: string) {
   return request({
-    url: `friends/delete/${id}`,
+    url: `friends/${id}`,
     method: 'DELETE'
   })
 }
 
 export function saveFriend(param: any) {
   return request({
-    url: '/friends/update',
+    url: '/friends',
     method: 'POST',
     data: {
       ...param

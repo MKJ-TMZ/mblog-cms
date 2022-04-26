@@ -5,7 +5,7 @@ import {
   getFriendInfoData,
   getFriendPageData,
   saveFriend,
-  saveFriendSave
+  saveFriendInfo
 } from "@/api/friend";
 import { ElMessageBox } from "element-plus";
 import { message, msgError, msgSuccess } from "@/utils/message";
@@ -80,7 +80,7 @@ const handleSaveFriendContent = () => {
     id: infoForm.id,
     content: infoForm.content
   }
-  saveFriendSave(param).then((res: any) => {
+  saveFriendInfo(param).then((res: any) => {
     if (res.code === 200) {
       getFriendInfo()
       msgSuccess('保存成功')
@@ -96,7 +96,7 @@ const handleFriendCommentSwitch = () => {
     id: infoForm.id,
     isCommentEnabled: infoForm.isCommentEnabled
   }
-  saveFriendSave(param).then((res: any) => {
+  saveFriendInfo(param).then((res: any) => {
     if (res.code === 200) {
       infoForm.isCommentEnabled ? msgSuccess('开启评论成功') : msgSuccess('关闭评论成功')
     }

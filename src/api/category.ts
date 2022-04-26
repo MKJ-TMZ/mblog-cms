@@ -18,7 +18,7 @@ export function getCategoryListData() {
 
 export function saveCategory(param: any) {
   return request({
-    url: 'category/save',
+    url: 'category',
     method: 'POST',
     data: {
       ...param
@@ -28,7 +28,7 @@ export function saveCategory(param: any) {
 
 export function deleteCategoryById(id: string) {
   return request({
-    url: `category/delete/${id}`,
+    url: `category/${id}`,
     method: 'DELETE'
   })
 }

@@ -21,7 +21,7 @@ export function getTagListData() {
 
 export function saveTag(param: any) {
   return request({
-    url: 'tag/save',
+    url: 'tag',
     method: 'POST',
     data: {
       ...param
@@ -31,7 +31,7 @@ export function saveTag(param: any) {
 
 export function deleteTagById(id: string) {
   return request({
-    url: `tag/delete/${id}`,
+    url: `tag/${id}`,
     method: 'DELETE'
   })
 }

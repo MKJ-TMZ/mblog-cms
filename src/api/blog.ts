@@ -4,7 +4,7 @@ import qs from 'qs'
 
 export function saveBlog(param: any) {
   return request({
-    url: 'blog/save',
+    url: 'blog',
     method: 'POST',
     data: {
       ...param
@@ -14,7 +14,7 @@ export function saveBlog(param: any) {
 
 export function getBlogDataById(id: string) {
   return request({
-    url: `blog/detail/${id}`,
+    url: `blog/${id}`,
     method: 'GET'
   })
 }
@@ -29,19 +29,9 @@ export function getBlogPageData(queryInfo?: any) {
   })
 }
 
-export function updateBlog(param: any) {
-  return request({
-    url: 'blog/update',
-    method: 'POST',
-    data: {
-      ...param
-    }
-  })
-}
-
 export function deleteBlogById(id: string) {
   return request({
-    url: `blog/delete/${id}`,
+    url: `blog/${id}`,
     method: 'DELETE'
   })
 }

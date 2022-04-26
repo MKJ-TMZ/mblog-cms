@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onBeforeMount, reactive, ref } from "vue";
-import { deleteBlogById, getBlogPageData, updateBlog } from "@/api/blog";
+import { deleteBlogById, getBlogPageData, saveBlog } from "@/api/blog";
 import { message, msgError, msgSuccess } from "@/utils/message";
 import { isEmpty, isNotEmpty } from "@/utils/func";
 import { useRouter } from "vue-router";
@@ -70,10 +70,10 @@ const handleQuery = () => {
 
 const handleBlogTopSwitch = (row: any) => {
   const {id, isTop} = row
-  updateBlog({id, isTop}).then((res: any) => {
+  saveBlog({id, isTop}).then((res: any) => {
     if (res.code == 200) {
       isTop ? msgSuccess('置顶成功') : msgSuccess('取消置顶成功')
-      getCategoryList()
+      getBlogPage()
     }
   }).catch((error: any) => {
     msgError('更新失败')
@@ -83,10 +83,10 @@ const handleBlogTopSwitch = (row: any) => {
 
 const handleBlogRecommendSwitch = (row: any) => {
   const {id, isRecommend} = row
-  updateBlog({id, isRecommend}).then((res: any) => {
+  saveBlog({id, isRecommend}).then((res: any) => {
     if (res.code == 200) {
       isRecommend ? msgSuccess('推荐成功') : msgSuccess('取消推荐成功')
-      getCategoryList()
+      getBlogPage()
     }
   }).catch((error: any) => {
     msgError('更新失败')
@@ -136,17 +136,16 @@ const handleVisibilitySubmit = () => {
     password: password.value
   }
 
-  updateBlog(param).then((res: any) => {
+  saveBlog(param).then((res: any) => {
     if (res.code === 200) {
       msgSuccess("更新成功")
-      getCategoryList()
+      getBlogPage()
+      dialogVisible.value = false
     }
   }).catch((error: any) => {
     msgError('更新失败')
     console.log(error.msg)
   })
-  getBlogPage()
-  dialogVisible.value = false
 }
 
 const handleSizeChange = (newSize: number) => {
