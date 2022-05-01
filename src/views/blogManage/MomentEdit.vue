@@ -4,6 +4,7 @@ import { getMomentDataById, saveMoment } from "@/api/moment";
 import { useRoute, useRouter } from "vue-router";
 import { msgError, msgSuccess } from "@/utils/message";
 import Breadcrumb from "@/components/Breadcrumb.vue";
+import { upload } from "@/api/upload";
 
 const router = useRouter()
 const route = useRoute()
@@ -16,6 +17,7 @@ const form = reactive<any>({
   isPublished: false
 })
 const formRef = ref<any>()
+const contentRef = ref<any>()
 const formRules = {
   content: [{required: true, message: '请输入动态内容', trigger: 'change'}]
 }
@@ -72,6 +74,17 @@ const handleSaveMoment = () => {
     console.log(error.msg)
   })
 }
+
+const handleImgAdd = (pos: any, file: any) => {
+  upload(file).then((res: any) => {
+    if (res.code == 200) {
+      contentRef.value.$img2Url(pos, res.data);
+    }
+  }).catch((error: any) => {
+    msgError('上传失败')
+    console.log(error)
+  })
+}
 </script>
 
 <template>
@@ -80,7 +93,7 @@ const handleSaveMoment = () => {
 
   <el-form ref="formRef" size="lager" label-position="top" :model="form" :rules="formRules">
     <el-form-item label="动态内容" prop="content">
-      <mavon-editor class="m-width-full" v-model="form.content"/>
+      <mavon-editor ref="contentRef" class="m-width-full" v-model="form.content" @imgAdd="handleImgAdd"/>
     </el-form-item>
 
     <el-form-item size="large" class="form-buttons">

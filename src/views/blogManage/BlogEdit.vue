@@ -7,6 +7,7 @@ import { isEmpty, isNotEmpty } from "@/utils/func";
 import { useRoute, useRouter } from "vue-router";
 import { getTagListData } from "@/api/tag";
 import { getCategoryListData } from "@/api/category";
+import { upload } from "@/api/upload";
 
 const router = useRouter()
 const route = useRoute()
@@ -16,6 +17,8 @@ const tagList = ref<any[]>([])
 const dialogVisible = ref<boolean>(false)
 const radio = ref<string>('public')
 const formRef = ref<any>()
+const descriptionRef = ref<any>()
+const contentRef = ref<any>()
 const form = reactive<any>({
   id: '',
   title: '',
@@ -152,7 +155,6 @@ const getBlogById = () => {
     msgError('获取详情失败')
     console.log(error.msg)
   })
-
 }
 
 const handleSaveBlog = () => {
@@ -170,6 +172,28 @@ const handleSaveBlog = () => {
   }).catch((error: any) => {
     msgError('发布失败')
     console.log(error.msg)
+  })
+}
+
+const handleDescriptionImgAdd = (pos: any, file: any) => {
+  upload(file).then((res: any) => {
+    if (res.code == 200) {
+      descriptionRef.value.$img2Url(pos, res.data);
+    }
+  }).catch((error: any) => {
+    msgError('上传失败')
+    console.log(error)
+  })
+}
+
+const handleContentImgAdd = (pos: any, file: any) => {
+  upload(file).then((res: any) => {
+    if (res.code == 200) {
+      contentRef.value.$img2Url(pos, res.data);
+    }
+  }).catch((error: any) => {
+    msgError('上传失败')
+    console.log(error)
   })
 }
 </script>
@@ -252,10 +276,10 @@ const handleSaveBlog = () => {
     </el-row>
 
     <el-form-item label="文章描述" prop="description">
-      <mavon-editor class="m-width-full" v-model="form.description"/>
+      <mavon-editor ref="descriptionRef" class="m-width-full" v-model="form.description" @imgAdd="handleDescriptionImgAdd"/>
     </el-form-item>
     <el-form-item label="文章正文" prop="content">
-      <mavon-editor class="m-width-full" v-model="form.content"/>
+      <mavon-editor ref="contentRef" class="m-width-full" v-model="form.content" @imgAdd="handleContentImgAdd"/>
     </el-form-item>
 
     <el-form-item class="form-buttons">
