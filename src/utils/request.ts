@@ -6,8 +6,8 @@ import { isNotEmpty } from "@/utils/func";
 import { msgError } from "@/utils/message";
 
 const request = axios.create({
-  baseURL: 'http://localhost:8888/admin/',
-  timeout: 30000,
+  baseURL: 'http://localhost/admin/',
+  timeout: 60000,
 })
 
 // 请求拦截

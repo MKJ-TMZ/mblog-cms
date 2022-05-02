@@ -19,6 +19,7 @@ const radio = ref<string>('public')
 const formRef = ref<any>()
 const descriptionRef = ref<any>()
 const contentRef = ref<any>()
+const uploadRef = ref<any>()
 const form = reactive<any>({
   id: '',
   title: '',
@@ -48,6 +49,7 @@ const formRules = {
   description: [{required: true, message: '请输入文章描述', trigger: 'change'}],
   content: [{required: true, message: '请输入文章正文', trigger: 'change'}]
 }
+const headers = {Authorization: window.localStorage.getItem('token') || ''}
 
 onBeforeMount(() => {
   init()
@@ -196,6 +198,30 @@ const handleContentImgAdd = (pos: any, file: any) => {
     console.log(error)
   })
 }
+
+const beforeCoverUpload = (rawFile: any) => {
+  if (rawFile.type !== 'image/jpeg' && rawFile.type !== 'image/png') {
+    msgError('只支持jpg或者png格式的图片')
+    return false
+  } else if (rawFile.size / 1024 / 1024 > 8) {
+    msgError('图片大小不能超过8MB')
+    return false
+  }
+  return true
+}
+
+const handleCoverUploadSuccess = (res: any) => {
+  if (res.code === 200) {
+    form.coverPic = res.data
+    msgSuccess('上传成功')
+  } else {
+    msgError('上传失败')
+  }
+}
+
+const handleCoverUploadError = (res: any) => {
+  msgError('上传失败')
+}
 </script>
 
 <template>
@@ -218,7 +244,25 @@ const handleContentImgAdd = (pos: any, file: any) => {
       </el-col>
       <el-col :span="12">
         <el-form-item label="封面图片URL" prop="coverPic">
-          <el-input v-model="form.coverPic" placeholder="文章首图，用于随机文章展示"/>
+          <el-input v-model="form.coverPic" placeholder="封面图，用于随机文章展示">
+            <template #append>
+              <el-upload
+                  ref="uploadRef"
+                  class="upload-demo"
+                  action="http://localhost/admin/upload/file"
+                  :auto-upload="true"
+                  :show-file-list="false"
+                  :on-success="handleCoverUploadSuccess"
+                  :on-error="handleCoverUploadError"
+                  :before-upload="beforeCoverUpload"
+                  :headers="headers"
+              >
+                <el-button class="ml-3">
+                  上传图片
+                </el-button>
+              </el-upload>
+            </template>
+          </el-input>
         </el-form-item>
       </el-col>
     </el-row>

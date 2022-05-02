@@ -4,11 +4,11 @@ import qs from 'qs'
 
 export function upload(file: any) {
   return request({
-    url: `upload`,
+    url: `upload/base64`,
     method: 'POST',
-    data: qs.stringify({
+    data: {
       base64: file['miniurl'],
       name: file['_name']
-    })
+    }
   })
 }
