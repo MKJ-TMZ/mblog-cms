@@ -12,6 +12,7 @@ import { upload } from "@/api/upload";
 const router = useRouter()
 const route = useRoute()
 
+const isEdit = ref<boolean>(false)
 const categoryList = ref<any[]>([])
 const tagList = ref<any[]>([])
 const dialogVisible = ref<boolean>(false)
@@ -45,7 +46,6 @@ const formRules = {
   coverPic: [{required: true, message: '请输入首图链接', trigger: 'change'}],
   categoryName: [{required: true, message: '请选择分类', trigger: 'change'}],
   tagNameSet: [{required: true, message: '请选择标签', trigger: 'change'}],
-  wordsCount: [{required: true, message: '请输入文章字数', trigger: 'change'}],
   description: [{required: true, message: '请输入文章描述', trigger: 'change'}],
   content: [{required: true, message: '请输入文章正文', trigger: 'change'}]
 }
@@ -59,6 +59,7 @@ const init = () => {
   getTagList()
   getCategoryList()
   if (route.name === 'blogEdit') {
+    isEdit.value = true
     getBlogById()
   }
 }
@@ -127,7 +128,6 @@ const handleDialogSubmit = () => {
   } else {
     form.isPublished = true
   }
-
   handleSaveBlog()
 }
 
@@ -163,6 +163,7 @@ const handleSaveBlog = () => {
   saveBlog(form).then((res: any) => {
     if (res.code === 200) {
       if (form.isDraft) {
+        form.id = res.data
         msgSuccess('保存成功')
       } else {
         msgSuccess('发布成功')
@@ -175,6 +176,11 @@ const handleSaveBlog = () => {
     msgError('发布失败')
     console.log(error.msg)
   })
+}
+
+const handleContentChange = () => {
+  form.wordsCount = form.content.length
+  form.readTime = form.wordsCount ? Math.round(form.wordsCount / 200) || 1 : 0
 }
 
 const handleDescriptionImgAdd = (pos: any, file: any) => {
@@ -295,25 +301,27 @@ const handleCoverUploadError = (res: any) => {
         </el-form-item>
       </el-col>
       <el-col :span="6">
-        <el-form-item label="字数（自动计算阅读时长）" prop="wordsCount">
+        <el-form-item label="字数（自动统计）">
           <el-input-number
               class="m-width-full"
-              placeholder="请输入文章字数（自动计算阅读时长）"
+              placeholder="请输入文章字数（自动统计）"
               controls-position="right"
               v-model="form.wordsCount"
               :onChange="handleWordCountsChange"
               :min="0"
+              disabled
           />
         </el-form-item>
       </el-col>
       <el-col :span="6">
-        <el-form-item label="阅读时长(分钟)" prop="readTime">
+        <el-form-item label="阅读时长(根据文章字数自动统计)">
           <el-input-number
               class="m-width-full"
-              placeholder="请输入阅读时长（可选）默认 Math.round(字数 / 200)"
+              placeholder="请输入阅读时长(根据文章字数自动统计)"
               controls-position="right"
               v-model="form.readTime"
               :min="0"
+              disabled
           />
         </el-form-item>
       </el-col>
@@ -323,11 +331,11 @@ const handleCoverUploadError = (res: any) => {
       <mavon-editor ref="descriptionRef" class="m-width-full" v-model="form.description" @imgAdd="handleDescriptionImgAdd"/>
     </el-form-item>
     <el-form-item label="文章正文" prop="content">
-      <mavon-editor ref="contentRef" class="m-width-full" v-model="form.content" @imgAdd="handleContentImgAdd"/>
+      <mavon-editor ref="contentRef" class="m-width-full" v-model="form.content" :onchange="handleContentChange" @imgAdd="handleContentImgAdd"/>
     </el-form-item>
 
     <el-form-item class="form-buttons">
-      <el-button type="info" @click="handleFormSubmit(true)">保存草稿</el-button>
+      <el-button type="info" v-if="!isEdit" @click="handleFormSubmit(true)">保存草稿</el-button>
       <el-button type="primary" @click="handleFormSubmit(false)">发布</el-button>
     </el-form-item>
   </el-form>

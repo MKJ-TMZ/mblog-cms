@@ -9,6 +9,7 @@ import { upload } from "@/api/upload";
 const router = useRouter()
 const route = useRoute()
 
+const isEdit = ref<boolean>(false)
 const form = reactive<any>({
   id: '',
   content: '',
@@ -24,6 +25,7 @@ const formRules = {
 
 onBeforeMount(() => {
   if (route.name === 'momentEdit') {
+    isEdit.value = true
     getMomentById(route.params.id as string)
   }
 })
@@ -97,7 +99,7 @@ const handleImgAdd = (pos: any, file: any) => {
     </el-form-item>
 
     <el-form-item size="large" class="form-buttons">
-      <el-button type="info" @click="handleSubmit(false)">保存草稿</el-button>
+      <el-button type="info" v-if="!isEdit" @click="handleSubmit(false)">保存草稿</el-button>
       <el-button type="primary" @click="handleSubmit(true)">发布动态</el-button>
     </el-form-item>
   </el-form>

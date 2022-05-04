@@ -83,7 +83,7 @@ const menuIcons = {
 }
 
 // 默认打开的菜单
-const defaultOpenedMenu = ['1', '2', '3', '4', '5']
+const defaultOpenedMenu = ['1']
 
 
 export { menuList, menuIcons, defaultOpenedMenu }
