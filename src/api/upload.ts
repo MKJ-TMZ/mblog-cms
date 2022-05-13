@@ -12,3 +12,7 @@ export function upload(file: any) {
     }
   })
 }
+
+export function getUploadUrl() {
+  return 'http://localhost/admin/upload/file'
+}

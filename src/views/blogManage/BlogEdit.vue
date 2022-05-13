@@ -7,7 +7,7 @@ import { isEmpty, isNotEmpty } from "@/utils/func";
 import { useRoute, useRouter } from "vue-router";
 import { getTagListData } from "@/api/tag";
 import { getCategoryListData } from "@/api/category";
-import { upload } from "@/api/upload";
+import { upload, getUploadUrl } from "@/api/upload";
 
 const router = useRouter()
 const route = useRoute()
@@ -255,7 +255,7 @@ const handleCoverUploadError = (res: any) => {
               <el-upload
                   ref="uploadRef"
                   class="upload-demo"
-                  action="http://localhost/admin/upload/file"
+                  :action="getUploadUrl()"
                   :auto-upload="true"
                   :show-file-list="false"
                   :on-success="handleCoverUploadSuccess"

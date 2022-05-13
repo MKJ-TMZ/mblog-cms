@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import store from "@/store";
 import { msgError } from "@/utils/message";
-import { SAVE_NAV_STATE } from "@/store/mutations-types";
+import { SAVE_NAV_STATE, SCROLL_TO_TOP } from "@/store/mutations-types";
 
 const routes: any[] = [
   {
@@ -140,6 +140,9 @@ router.beforeEach((to: any, from: any, next: any) => {
 
   // 储存当前菜单id
   store.commit(SAVE_NAV_STATE, to.path)
+
+  // 回到顶部
+  store.commit(SCROLL_TO_TOP)
 
   next()
 })
